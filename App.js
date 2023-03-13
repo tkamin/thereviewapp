@@ -15,6 +15,7 @@ function MyTabs() {
         name="Home"
         component={HomeScreen}
         options={{
+          headerShown: false,
           tabBarShowLabel: false,
           tabBarIcon: ({ size, focused, color }) => {
             return (
@@ -27,7 +28,7 @@ function MyTabs() {
         }}
       />
       <Tab.Screen
-        name="Account"
+        name="AccountScreen"
         component={AccountScreen}
         options={{
           tabBarShowLabel: false,
