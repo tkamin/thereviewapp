@@ -2,8 +2,11 @@ import * as React from "react";
 import { View, Text, Image, TextInput, StyleSheet, Button } from "react-native";
 import { ListItem } from "@rneui/themed";
 import TRASearchBar from "../components/TRASearchBar";
+import SearchResultsList from "../components/SearchResultsList";
 
 const SearchResultsScreen = ({ navigation, route }) => {
+  var searchResults = {};
+
   return (
     <View style={[styles.container]}>
       <View style={{ padding: 10 }}></View>
@@ -18,10 +21,8 @@ const SearchResultsScreen = ({ navigation, route }) => {
           }}
         />
         <View style={{ padding: 10 }}></View>
-        <TRASearchBar
-          navigation={navigation}
-          searchText={route.params.searchText}
-        />
+        <TRASearchBar searchText={route.params.searchText} />
+        <SearchResultsList results={searchResults} />
       </View>
     </View>
   );

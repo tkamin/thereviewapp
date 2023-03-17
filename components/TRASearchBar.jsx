@@ -1,8 +1,10 @@
 import * as React from "react";
 import { SearchBar } from "@rneui/themed";
+import { useNavigation } from "@react-navigation/native";
 
-const TRASearchBar = ({ navigation, searchText }) => {
+const TRASearchBar = ({ searchText }) => {
   const [value, setValue] = React.useState(searchText);
+  const navigation = useNavigation();
 
   return (
     <SearchBar

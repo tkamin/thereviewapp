@@ -16,7 +16,7 @@ const HomeScreen = ({ navigation, route }) => {
           }}
         />
         <View style={{ padding: 10 }}></View>
-        <TRASearchBar navigation={navigation} />
+        <TRASearchBar />
       </View>
     </View>
   );
