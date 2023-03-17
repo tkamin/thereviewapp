@@ -3,19 +3,20 @@ import { View, Text, Image, TextInput, StyleSheet, Button } from "react-native";
 import AccountScreen from "./AccountScreen";
 import { ListItem, SearchBar } from "@rneui/themed";
 
-const HomeScreen = ({ navigation, route }) => {
-  const [value, setValue] = React.useState("");
+const SearchResultsScreen = ({ navigation, route }) => {
+  const [value, setValue] = React.useState(route.params.search);
 
   return (
     <View style={[styles.container]}>
+      <View style={{ padding: 10 }}></View>
       <View style={{ width: "100%" }}>
         <Image
-          source={require("../assets/images/logo-text.png")}
+          source={require("../assets/images/logo-small.png")}
           style={{
-            width: "90%",
-            height: 250,
-            resizeMode: "contain",
+            width: 276,
+            height: 50,
             alignSelf: "center",
+            marginLeft: -20,
           }}
         />
         <View style={{ padding: 10 }}></View>
@@ -60,7 +61,6 @@ const HomeScreen = ({ navigation, route }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     flexDirection: "column",
     justifyContent: "space-evenly",
     backgroundColor: "#fff",
@@ -80,4 +80,4 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
 });
-export default HomeScreen;
+export default SearchResultsScreen;

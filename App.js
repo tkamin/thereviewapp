@@ -4,6 +4,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import AccountScreen from "./screens/AccountScreen";
 import HomeScreen from "./screens/HomeScreen";
+import SearchResultsScreen from "./screens/SearchResultsScreen";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 const Tab = createBottomTabNavigator();
@@ -13,7 +14,7 @@ function MyTabs() {
     <Tab.Navigator>
       <Tab.Screen
         name="Home"
-        component={HomeScreen}
+        component={SearchStackScreen}
         options={{
           headerShown: false,
           tabBarShowLabel: false,
@@ -45,8 +46,28 @@ function MyTabs() {
     </Tab.Navigator>
   );
 }
-const Stack = createNativeStackNavigator();
+const SearchStack = createNativeStackNavigator();
+function SearchStackScreen() {
+  return (
+    <SearchStack.Navigator>
+      <SearchStack.Screen
+        name="SearchHome"
+        component={HomeScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <SearchStack.Screen
+        name="SearchResults"
+        component={SearchResultsScreen}
+        options={{ title: "Search Results" }}
+      />
+      {/*<SearchStack.Screen name="Details" component={DetailsScreen} />*/}
+    </SearchStack.Navigator>
+  );
+}
 
+const Stack = createNativeStackNavigator();
 export default function App() {
   return (
     <NavigationContainer>
