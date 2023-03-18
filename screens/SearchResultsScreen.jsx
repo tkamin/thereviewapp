@@ -1,5 +1,5 @@
 import * as React from "react";
-import { View, Text, Image, TextInput, StyleSheet, Button } from "react-native";
+import { View, Text, Image, StyleSheet, Button } from "react-native";
 import { ListItem } from "@rneui/themed";
 import TRASearchBar from "../components/TRASearchBar";
 import SearchResultsList from "../components/SearchResultsList";
@@ -22,6 +22,12 @@ const SearchResultsScreen = ({ navigation, route }) => {
         />
         <View style={{ padding: 10 }}></View>
         <TRASearchBar searchText={route.params.searchText} />
+        <View style={{ padding: 10 }}></View>
+        <View style={[styles.separator]} />
+        <View style={{ padding: 5 }}></View>
+        <View>
+          <Text style={[styles.header]}>Restaurant Reviews</Text>
+        </View>
         <SearchResultsList results={searchResults} />
       </View>
     </View>
@@ -30,23 +36,22 @@ const SearchResultsScreen = ({ navigation, route }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "column",
-    justifyContent: "space-evenly",
     backgroundColor: "#fff",
+    minHeight: "100%",
   },
-  input: {
-    width: 300,
-    height: 40,
-    backgroundColor: "#fff",
-    //backgroundImage: `url(https://cdn2.hubspot.net/hubfs/4004166/bioticresearch_website_assets/images/search_icon.png)`,
-    //paddingLeft: 40,
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderColor: "#ccc",
-    borderWidth: 1,
-    borderRadius: 15,
+  separator: {
+    height: 1,
+    width: "100%",
+    backgroundColor: "#ddd",
+  },
+  header: {
+    //fontFamily: "Cubano",
+    color: "#FF4B3E",
     fontSize: 16,
-    alignSelf: "center",
+    lineHeight: 20,
+    fontWeight: "bold",
+    textTransform: "uppercase",
+    marginLeft: 20,
   },
 });
 export default SearchResultsScreen;
