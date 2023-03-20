@@ -56,7 +56,7 @@ const DATA = [
 const SearchResultsList = ({ results }) => {
   const navigation = useNavigation();
   return (
-    <View>
+    <View style={[styles.container]}>
       <FlatList
         data={DATA}
         renderItem={({ item }) => <Item item={item} />}

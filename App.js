@@ -18,6 +18,7 @@ function MyTabs() {
         options={{
           headerShown: false,
           tabBarShowLabel: false,
+          tabBarStyle: { display: "none" },
           tabBarIcon: ({ size, focused, color }) => {
             return (
               <Image
@@ -33,6 +34,7 @@ function MyTabs() {
         component={AccountScreen}
         options={{
           tabBarShowLabel: false,
+          tabBarStyle: { display: "none" },
           tabBarIcon: ({ size, focused, color }) => {
             return (
               <Image
@@ -60,7 +62,7 @@ function SearchStackScreen() {
       <SearchStack.Screen
         name="SearchResults"
         component={SearchResultsScreen}
-        options={{ title: "Search Results" }}
+        options={{ title: "Search Results", tabBarStyle: { display: "none" } }}
       />
       {/*<SearchStack.Screen name="Details" component={DetailsScreen} />*/}
     </SearchStack.Navigator>

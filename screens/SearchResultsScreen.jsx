@@ -10,7 +10,7 @@ const SearchResultsScreen = ({ navigation, route }) => {
   return (
     <View style={[styles.container]}>
       <View style={{ padding: 10 }}></View>
-      <View style={{ width: "100%" }}>
+      <View style={{ width: "100%", flex: 1 }}>
         <Image
           source={require("../assets/images/logo-small.png")}
           style={{
@@ -36,6 +36,7 @@ const SearchResultsScreen = ({ navigation, route }) => {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     backgroundColor: "#fff",
     minHeight: "100%",
   },
