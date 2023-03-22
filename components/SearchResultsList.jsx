@@ -8,7 +8,15 @@ const Item = ({ item }) => {
       <Image source={item.icon} style={[styles.icon]} />
       <View style={[styles.info]}>
         <Text style={styles.title}>{item.title}</Text>
-        <Image source={item.stars} style={[styles.icon]} />
+        <View style={[styles.containerreview]}>
+          <Image source={item.stars} />
+          <Text style={styles.reviewinfo}>{item.startotal}</Text>
+        </View>
+        <Text style={styles.distance}>
+          {/* TODO: for android, in your android/app/build.gradle replace def jscFlavor = 'org.webkit:android-jsc-intl:+' */}
+          {item.reviewcount.toLocaleString()} reviews ({item.reviewsourcecount}{" "}
+          sources)
+        </Text>
         <Text style={styles.distance}>{item.distance}</Text>
       </View>
     </View>
@@ -21,6 +29,9 @@ const DATA = [
     title: "Durbar - Nepalese & Indian Bistro",
     icon: require("../assets/images/example-icon1.png"),
     stars: require("../assets/images/5stars.png"),
+    startotal: 5,
+    reviewcount: 231,
+    reviewsourcecount: 2,
     distance: "6.4 mi",
   },
   {
@@ -28,6 +39,9 @@ const DATA = [
     title: "Randi's Grill & Pub",
     icon: require("../assets/images/example-icon2.png"),
     stars: require("../assets/images/5stars.png"),
+    startotal: 5,
+    reviewcount: 12345,
+    reviewsourcecount: 3,
     distance: "6.1 mi",
   },
   {
@@ -35,6 +49,9 @@ const DATA = [
     title: "Pepe Osaka's Fishtaco Tequila Bar & Grill",
     icon: require("../assets/images/example-icon1.png"),
     stars: require("../assets/images/4.5stars.png"),
+    startotal: 4.6,
+    reviewcount: 1111,
+    reviewsourcecount: 3,
     distance: "6.2 mi",
   },
   {
@@ -42,6 +59,9 @@ const DATA = [
     title: "Hernando's Pizza Pub",
     icon: require("../assets/images/example-icon2.png"),
     stars: require("../assets/images/4.5stars.png"),
+    startotal: 4.5,
+    reviewcount: 743,
+    reviewsourcecount: 2,
     distance: "5.8 mi",
   },
   {
@@ -49,6 +69,9 @@ const DATA = [
     title: "The Smokehouse BBQ",
     icon: require("../assets/images/example-icon1.png"),
     stars: require("../assets/images/4.5stars.png"),
+    startotal: 4.5,
+    reviewcount: 1289,
+    reviewsourcecount: 3,
     distance: "6.1 mi",
   },
   {
@@ -56,6 +79,9 @@ const DATA = [
     title: "Rudi's Deli",
     icon: require("../assets/images/example-icon2.png"),
     stars: require("../assets/images/4.5stars.png"),
+    startotal: 4.4,
+    reviewcount: 86,
+    reviewsourcecount: 2,
     distance: "6.2 mi",
   },
 ];
@@ -76,6 +102,9 @@ const SearchResultsList = ({ results }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  containerreview: {
+    flexDirection: "row",
   },
   item: {
     backgroundColor: "#fff",
@@ -99,6 +128,12 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginTop: 3,
     marginLeft: 1,
+  },
+  reviewinfo: {
+    color: "#464646",
+    fontSize: 12,
+    marginTop: 4,
+    marginLeft: 2,
   },
 });
 
