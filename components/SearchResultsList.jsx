@@ -1,25 +1,39 @@
 import * as React from "react";
-import { View, FlatList, StyleSheet, Text, Image } from "react-native";
+import {
+  View,
+  FlatList,
+  StyleSheet,
+  Text,
+  Image,
+  TouchableOpacity,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 const Item = ({ item }) => {
+  const navigation = useNavigation();
+
   return (
-    <View style={styles.item}>
-      <Image source={item.icon} style={[styles.icon]} />
-      <View style={[styles.info]}>
-        <Text style={styles.title}>{item.title}</Text>
-        <View style={[styles.containerreview]}>
-          <Image source={item.stars} />
-          <Text style={styles.reviewinfo}>{item.startotal}</Text>
+    <TouchableOpacity
+      style={[styles.card, { backgroundColor: item.color }]}
+      onPress={() => navigation.navigate("CompanyInfo", { company: item })}
+    >
+      <View style={styles.item}>
+        <Image source={item.icon} style={[styles.icon]} />
+        <View style={[styles.info]}>
+          <Text style={styles.title}>{item.title}</Text>
+          <View style={[styles.containerreview]}>
+            <Image source={item.stars} />
+            <Text style={styles.reviewinfo}>{item.startotal}</Text>
+          </View>
+          <Text style={styles.distance}>
+            {/* TODO: for android, in your android/app/build.gradle replace def jscFlavor = 'org.webkit:android-jsc-intl:+' */}
+            {item.reviewcount.toLocaleString()} reviews (
+            {item.reviewsourcecount} sources)
+          </Text>
+          <Text style={styles.distance}>{item.distance}</Text>
         </View>
-        <Text style={styles.distance}>
-          {/* TODO: for android, in your android/app/build.gradle replace def jscFlavor = 'org.webkit:android-jsc-intl:+' */}
-          {item.reviewcount.toLocaleString()} reviews ({item.reviewsourcecount}{" "}
-          sources)
-        </Text>
-        <Text style={styles.distance}>{item.distance}</Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import AccountScreen from "./screens/AccountScreen";
 import HomeScreen from "./screens/HomeScreen";
 import SearchResultsScreen from "./screens/SearchResultsScreen";
+import CompanyInfoScreen from "./screens/CompanyInfoScreen";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 const Tab = createBottomTabNavigator();
@@ -64,7 +65,11 @@ function SearchStackScreen() {
         component={SearchResultsScreen}
         options={{ title: "Search Results", tabBarStyle: { display: "none" } }}
       />
-      {/*<SearchStack.Screen name="Details" component={DetailsScreen} />*/}
+      <SearchStack.Screen
+        name="CompanyInfo"
+        component={CompanyInfoScreen}
+        options={{ title: "Company Info", tabBarStyle: { display: "none" } }}
+      />
     </SearchStack.Navigator>
   );
 }
