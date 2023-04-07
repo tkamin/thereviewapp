@@ -9,11 +9,18 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
-const Item = ({ item }) => {
+const PlatformReviewCard = ({ item }) => {
   const navigation = useNavigation();
 
+  console.log(item);
   return (
-    <TouchableOpacity
+    <View>
+      <View style={[styles.separator]} />
+      <View style={{ padding: 5 }}></View>
+    </View>
+  );
+  /*
+  return (
       style={[styles.card, { backgroundColor: item.color }]}
       onPress={() => navigation.navigate("CompanyInfo", { company: item })}
     >
@@ -26,7 +33,7 @@ const Item = ({ item }) => {
             <Text style={styles.reviewinfo}>{item.startotal}</Text>
           </View>
           <Text style={styles.distance}>
-            {/* TODO: for android, in your android/app/build.gradle replace def jscFlavor = 'org.webkit:android-jsc-intl:+' */}
+            {// TODO: for android, in your android/app/build.gradle replace def jscFlavor = 'org.webkit:android-jsc-intl:+' }
             {item.reviewcount.toLocaleString()} reviews (
             {item.reviewsourcecount} sources)
           </Text>
@@ -35,15 +42,16 @@ const Item = ({ item }) => {
       </View>
     </TouchableOpacity>
   );
+  */
 };
 
-const SearchResultsList = ({ results }) => {
+const PlatformReviewList = ({ reviews }) => {
   const navigation = useNavigation();
   return (
     <View style={[styles.container]}>
       <FlatList
         data={DATA}
-        renderItem={({ item }) => <Item item={item} />}
+        renderItem={({ item }) => <PlatformReviewCard item={item} />}
         keyExtractor={(item) => item.id}
       />
     </View>
@@ -149,6 +157,11 @@ const styles = StyleSheet.create({
     marginTop: 4,
     marginLeft: 2,
   },
+  separator: {
+    height: 1,
+    width: "100%",
+    backgroundColor: "#ddd",
+  },
 });
 
-export default SearchResultsList;
+export default PlatformReviewList;
