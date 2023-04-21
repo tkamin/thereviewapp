@@ -30,7 +30,7 @@ Winter Park, CO 80482`}{" "}
           </View>
         </View>
       </View>
-      <View>
+      <View style={styles.container}>
         <View style={[styles.separator]} />
         <View style={{ padding: 5 }}></View>
         <View style={styles.reviews}>
@@ -115,6 +115,7 @@ const styles = StyleSheet.create({
   },
   reviews: {
     marginLeft: 20,
+    flex: 1,
     flexDirection: "column",
   },
   separator: {

@@ -12,44 +12,52 @@ import { useNavigation } from "@react-navigation/native";
 const PlatformReviewCard = ({ item }) => {
   const navigation = useNavigation();
 
-  console.log(item);
   return (
-    <View>
-      <View style={[styles.separator]} />
-      <View style={{ padding: 5 }}></View>
-    </View>
-  );
-  /*
-  return (
-      style={[styles.card, { backgroundColor: item.color }]}
+    <TouchableOpacity
+      style={[{ flex: 1, width: "100%" }]}
       onPress={() => navigation.navigate("CompanyInfo", { company: item })}
     >
-      <View style={styles.item}>
-        <Image source={item.icon} style={[styles.icon]} />
-        <View style={[styles.info]}>
-          <Text style={styles.title}>{item.title}</Text>
-          <View style={[styles.containerreview]}>
-            <Image source={item.stars} />
-            <Text style={styles.reviewinfo}>{item.startotal}</Text>
+      <View style={styles.container}>
+        <View style={styles.item}>
+          <Image source={item.icon} style={[styles.icon]} />
+          <View style={[styles.info]}>
+            <View style={[styles.rowwitharrow]}>
+              <View>
+                <Text style={styles.title}>{item.title}</Text>
+                <Text style={styles.distance}>
+                  {/* TODO: for android, in your android/app/build.gradle replace def jscFlavor = 'org.webkit:android-jsc-intl:+'00 */}
+                  {item.reviewcount.toLocaleString()} reviews
+                </Text>
+              </View>
+              <View style={[styles.rightarrow]}>
+                <Image
+                  source={require("../assets/images/icons/right-arrow.png")}
+                  style={[styles.icon]}
+                />
+              </View>
+            </View>
+            <View style={[styles.containerreview]}>
+              <Image source={item.stars} />
+              <Text style={styles.reviewinfo}>{item.startotal} stars</Text>
+            </View>
           </View>
-          <Text style={styles.distance}>
-            {// TODO: for android, in your android/app/build.gradle replace def jscFlavor = 'org.webkit:android-jsc-intl:+' }
-            {item.reviewcount.toLocaleString()} reviews (
-            {item.reviewsourcecount} sources)
-          </Text>
-          <Text style={styles.distance}>{item.distance}</Text>
         </View>
       </View>
     </TouchableOpacity>
   );
-  */
 };
 
 const PlatformReviewList = ({ reviews }) => {
   const navigation = useNavigation();
+
   return (
     <View style={[styles.container]}>
       <FlatList
+        style={{
+          flex: 1,
+          width: "100%",
+          marginTop: 20,
+        }}
         data={DATA}
         renderItem={({ item }) => <PlatformReviewCard item={item} />}
         keyExtractor={(item) => item.id}
@@ -61,8 +69,8 @@ const PlatformReviewList = ({ reviews }) => {
 const DATA = [
   {
     id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-    title: "Durbar - Nepalese & Indian Bistro",
-    icon: require("../assets/images/example-icon1.png"),
+    title: "The Review App",
+    icon: require("../assets/images/icons/small-tra.png"),
     stars: require("../assets/images/5stars.png"),
     startotal: 5,
     reviewcount: 231,
@@ -71,8 +79,8 @@ const DATA = [
   },
   {
     id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
-    title: "Randi's Grill & Pub",
-    icon: require("../assets/images/example-icon2.png"),
+    title: "Google",
+    icon: require("../assets/images/icons/small-google.png"),
     stars: require("../assets/images/5stars.png"),
     startotal: 5,
     reviewcount: 12345,
@@ -81,8 +89,8 @@ const DATA = [
   },
   {
     id: "58694a0f-3da1-471f-bd96-145571e29d72",
-    title: "Pepe Osaka's Fishtaco Tequila Bar & Grill",
-    icon: require("../assets/images/example-icon1.png"),
+    title: "Yelp",
+    icon: require("../assets/images/icons/small-yelp.png"),
     stars: require("../assets/images/4.5stars.png"),
     startotal: 4.6,
     reviewcount: 1111,
@@ -91,8 +99,8 @@ const DATA = [
   },
   {
     id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28bb",
-    title: "Hernando's Pizza Pub",
-    icon: require("../assets/images/example-icon2.png"),
+    title: "Trust Pilot",
+    icon: require("../assets/images/icons/small-tra.png"),
     stars: require("../assets/images/4.5stars.png"),
     startotal: 4.5,
     reviewcount: 743,
@@ -101,8 +109,8 @@ const DATA = [
   },
   {
     id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f64",
-    title: "The Smokehouse BBQ",
-    icon: require("../assets/images/example-icon1.png"),
+    title: "Consumer Affairs",
+    icon: require("../assets/images/icons/small-google.png"),
     stars: require("../assets/images/4.5stars.png"),
     startotal: 4.5,
     reviewcount: 1289,
@@ -111,8 +119,8 @@ const DATA = [
   },
   {
     id: "58694a0f-3da1-471f-bd96-145571e29d73",
-    title: "Rudi's Deli",
-    icon: require("../assets/images/example-icon2.png"),
+    title: "Better Business Bureau",
+    icon: require("../assets/images/icons/small-yelp.png"),
     stars: require("../assets/images/4.5stars.png"),
     startotal: 4.4,
     reviewcount: 86,
@@ -127,15 +135,33 @@ const styles = StyleSheet.create({
   },
   containerreview: {
     flexDirection: "row",
+    marginTop: 12,
   },
   item: {
+    borderColor: "#D9D9D9",
+    borderWidth: 1,
+    borderRadius: 5,
     backgroundColor: "#fff",
-    padding: 20,
+    marginBottom: 20,
+    marginRight: 20,
+    paddingVertical: 14,
+    paddingLeft: 18,
     flexDirection: "row",
     alignItems: "flex-start", // if you want to fill rows left to right
   },
+  rowwitharrow: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "flex-start",
+    marginRight: -1,
+  },
+  rightarrow: {
+    marginLeft: "auto",
+    marginTop: 5,
+  },
   icon: {
     marginRight: 20,
+    marginTop: 5,
   },
   info: {
     flex: 1,
