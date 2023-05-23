@@ -20,15 +20,15 @@ const Item = ({ item }) => {
       <View style={styles.item}>
         <Image source={item.icon} style={[styles.icon]} />
         <View style={[styles.info]}>
-          <Text style={styles.title}>{item.title}</Text>
+          <Text style={styles.title}>{item.name}</Text>
           <View style={[styles.containerreview]}>
             <Image source={item.stars} />
-            <Text style={styles.reviewinfo}>{item.startotal}</Text>
+            <Text style={styles.reviewinfo}>{item.rating}</Text>
           </View>
           <Text style={styles.distance}>
             {/* TODO: for android, in your android/app/build.gradle replace def jscFlavor = 'org.webkit:android-jsc-intl:+' */}
-            {item.reviewcount.toLocaleString()} reviews (
-            {item.reviewsourcecount} sources)
+            {item.user_ratings_total.toLocaleString()} reviews (
+            {item.review_source_count} sources)
           </Text>
           <Text style={styles.distance}>{item.distance}</Text>
         </View>
@@ -42,76 +42,13 @@ const SearchResultsList = ({ results }) => {
   return (
     <View style={[styles.container]}>
       <FlatList
-        data={DATA}
+        data={results}
         renderItem={({ item }) => <Item item={item} />}
         keyExtractor={(item) => item.id}
       />
     </View>
   );
 };
-
-const DATA = [
-  {
-    id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-    title: "Durbar - Nepalese & Indian Bistro",
-    icon: require("../assets/images/example-icon1.png"),
-    stars: require("../assets/images/5stars.png"),
-    startotal: 5,
-    reviewcount: 231,
-    reviewsourcecount: 2,
-    distance: "6.4 mi",
-  },
-  {
-    id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
-    title: "Randi's Grill & Pub",
-    icon: require("../assets/images/example-icon2.png"),
-    stars: require("../assets/images/5stars.png"),
-    startotal: 5,
-    reviewcount: 12345,
-    reviewsourcecount: 3,
-    distance: "6.1 mi",
-  },
-  {
-    id: "58694a0f-3da1-471f-bd96-145571e29d72",
-    title: "Pepe Osaka's Fishtaco Tequila Bar & Grill",
-    icon: require("../assets/images/example-icon1.png"),
-    stars: require("../assets/images/4.5stars.png"),
-    startotal: 4.6,
-    reviewcount: 1111,
-    reviewsourcecount: 3,
-    distance: "6.2 mi",
-  },
-  {
-    id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28bb",
-    title: "Hernando's Pizza Pub",
-    icon: require("../assets/images/example-icon2.png"),
-    stars: require("../assets/images/4.5stars.png"),
-    startotal: 4.5,
-    reviewcount: 743,
-    reviewsourcecount: 2,
-    distance: "5.8 mi",
-  },
-  {
-    id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f64",
-    title: "The Smokehouse BBQ",
-    icon: require("../assets/images/example-icon1.png"),
-    stars: require("../assets/images/4.5stars.png"),
-    startotal: 4.5,
-    reviewcount: 1289,
-    reviewsourcecount: 3,
-    distance: "6.1 mi",
-  },
-  {
-    id: "58694a0f-3da1-471f-bd96-145571e29d73",
-    title: "Rudi's Deli",
-    icon: require("../assets/images/example-icon2.png"),
-    stars: require("../assets/images/4.5stars.png"),
-    startotal: 4.4,
-    reviewcount: 86,
-    reviewsourcecount: 2,
-    distance: "6.2 mi",
-  },
-];
 
 const styles = StyleSheet.create({
   container: {

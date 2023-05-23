@@ -10,7 +10,7 @@ const Details = ({ item }) => {
       <View style={styles.item}>
         <Image source={item.icon} style={[styles.icon]} />
         <View style={[styles.info]}>
-          <Text style={styles.title}>{item.title}</Text>
+          <Text style={styles.title}>{item.name}</Text>
           <View style={[styles.containerreview]}>
             <Text style={[styles.text]}>
               Durbar incorporates quality ingredients to our receipes, offering
@@ -36,12 +36,12 @@ Winter Park, CO 80482`}{" "}
         <View style={styles.reviews}>
           <View>
             <Text style={[styles.header]}>
-              {item.reviewcount.toLocaleString()} Total Reviews
+              {item.user_ratings_total.toLocaleString()} Total Reviews
             </Text>
           </View>
           <View style={[styles.containerstars]}>
             <Image source={item.stars} />
-            <Text style={styles.reviewinfo}>{item.startotal} stars</Text>
+            <Text style={styles.reviewinfo}>{item.rating} stars</Text>
           </View>
           <PlatformReviewList reviews={reviews}></PlatformReviewList>
         </View>

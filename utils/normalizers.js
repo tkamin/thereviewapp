@@ -1,0 +1,97 @@
+/* 
+Normalized:
+  {
+    id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
+    name: "Durbar - Nepalese & Indian Bistro",
+    icon: require("../assets/images/example-icon1.png"),
+    stars: require("../assets/images/5stars.png"),
+    rating: 5,
+    user_ratings_total: 231,
+    review_source_count: 2,
+    distance: "6.4 mi",
+  },
+*/
+
+/* from 
+[
+ {
+      business_status: "OPERATIONAL",
+      geometry: {
+        location: {
+          lat: 39.9679716,
+          lng: -105.7831853,
+        },
+        viewport: {
+          northeast: {
+            lat: 39.9695931802915,
+            lng: -105.78158705,
+          },
+          southwest: {
+            lat: 39.9668952197085,
+            lng: -105.78564805,
+          },
+        },
+      },
+      icon: "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/lodging-71.png",
+      icon_background_color: "#909CE1",
+      icon_mask_base_uri:
+        "https://maps.gstatic.com/mapfiles/place_api/icons/v2/hotel_pinlet",
+      name: "Devil's Thumb Ranch Resort & Spa",
+      opening_hours: {
+        open_now: true,
+      },
+      photos: [
+        {
+          height: 1334,
+          html_attributions: [
+            '\u003ca href="https://maps.google.com/maps/contrib/111438596264398423591"\u003eDevil&#39;s Thumb Ranch Resort &amp; Spa\u003c/a\u003e',
+          ],
+          photo_reference:
+            "AZose0nqT0jX4Nmof2_EJ-AAywylOLUzwA_QnMBu9ujiH2g1KkQP7VfqlHGEhnuDmB0uFmRWT1P9D4Gx6o6_JL04ZKsQ0XxawnBj8NxsytmylSlmjB-rb_OkbhsPwBI1MLW_IrGYSLkCtN6-CKVonMfAg2bfvLz2kt-VlOLB6RYRQ3KWgfdp",
+          width: 2000,
+        },
+      ],
+      place_id: "ChIJLz2SkEwzaocR2XqqxRp-yqI",
+      plus_code: {
+        compound_code: "X698+5P Tabernash, CO, USA",
+        global_code: "85FPX698+5P",
+      },
+      rating: 4.6,
+      reference: "ChIJLz2SkEwzaocR2XqqxRp-yqI",
+      scope: "GOOGLE",
+      types: [
+        "spa",
+        "travel_agency",
+        "lodging",
+        "restaurant",
+        "food",
+        "point_of_interest",
+        "establishment",
+      ],
+      user_ratings_total: 1452,
+      vicinity: "3530 County Road 83, Tabernash",
+    }
+]
+*/
+export function normalizeGooglePlacesSearchResults(incoming) {
+  var normalized = [];
+
+  if (!incoming.results) {
+    return normalized;
+  }
+
+  incoming.results.map((place) => {
+    var result = {};
+    result.id = place.place_id;
+    result.name = place.name;
+    result.icon = require("../assets/images/example-icon1.png");
+    result.stars = require("../assets/images/5stars.png");
+    result.rating = place.rating;
+    result.user_ratings_total = place.user_ratings_total;
+    result.distance = "6.4 mi";
+    result.review_source_count = 1;
+    normalized.push(result);
+  });
+
+  return normalized;
+}
