@@ -1,4 +1,4 @@
-import { StatusBar } from "expo-status-bar";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, Image } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -7,6 +7,7 @@ import HomeScreen from "./screens/HomeScreen";
 import SearchResultsScreen from "./screens/SearchResultsScreen";
 import CompanyInfoScreen from "./screens/CompanyInfoScreen";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import * as Location from "expo-location";
 
 const Tab = createBottomTabNavigator();
 
@@ -76,23 +77,32 @@ function SearchStackScreen() {
 
 const Stack = createNativeStackNavigator();
 export default function App() {
+  const [location, setLocation] = useState(null);
+  const [errorMsg, setErrorMsg] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        setErrorMsg("Permission to access location was denied");
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+    })();
+  }, []);
+
+  let text = "Waiting..";
+  if (errorMsg) {
+    text = errorMsg;
+  } else if (location) {
+    text = JSON.stringify(location);
+  }
+
   return (
     <NavigationContainer>
       <MyTabs />
-      {/*
-      <Stack.Navigator>
-        <Stack.Screen
-          name="Home"
-          component={HomeScreen}
-          options={{ title: "Welcome" }}
-        />
-        <Stack.Screen name="AccountScreen" component={AccountScreen} />
-      </Stack.Navigator>
-      <View style={styles.container}>
-        <Text>Open up App.js to start working on your app!</Text>
-        <StatusBar style="auto" />
-      </View>
-  */}
     </NavigationContainer>
   );
 }

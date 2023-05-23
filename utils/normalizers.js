@@ -1,3 +1,6 @@
+import React, { useState, useEffect } from "react";
+import * as Location from "expo-location";
+
 /* 
 Normalized:
   {
@@ -76,22 +79,79 @@ Normalized:
 export function normalizeGooglePlacesSearchResults(incoming) {
   var normalized = [];
 
+  const [location, setLocation] = useState(null);
+  const [errorMsg, setErrorMsg] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        setErrorMsg("Permission to access location was denied");
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+    })();
+  }, []);
+
+  let text = "Waiting..";
+  if (errorMsg) {
+    text = errorMsg;
+  } else if (location) {
+    text = JSON.stringify(location);
+  }
+
   if (!incoming.results) {
     return normalized;
   }
 
-  incoming.results.map((place) => {
-    var result = {};
-    result.id = place.place_id;
-    result.name = place.name;
-    result.icon = require("../assets/images/example-icon1.png");
-    result.stars = require("../assets/images/5stars.png");
-    result.rating = place.rating;
-    result.user_ratings_total = place.user_ratings_total;
-    result.distance = "6.4 mi";
-    result.review_source_count = 1;
-    normalized.push(result);
-  });
+  if (location && location.coords) {
+    incoming.results.map((place) => {
+      var result = {};
+      result.id = place.place_id;
+      result.name = place.name;
+      result.icon = require("../assets/images/example-icon1.png");
+      result.stars = require("../assets/images/5stars.png");
+      result.rating = place.rating;
+      result.user_ratings_total = place.user_ratings_total;
+
+      result.distance = getDistanceFromLatLonInMiles(
+        location.coords.latitude,
+        location.coords.longitude,
+        place.geometry.location.lat,
+        place.geometry.location.lng
+      );
+      result.distance =
+        (Math.round(result.distance * 100) / 100).toFixed(1) + " mi";
+      result.review_source_count = 1;
+      normalized.push(result);
+    });
+  }
 
   return normalized;
+}
+
+function getDistanceFromLatLonInMiles(lat1, lon1, lat2, lon2) {
+  var km = getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2);
+  return km * 0.621371;
+}
+
+function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+  var R = 6371; // Radius of the earth in km
+  var dLat = deg2rad(lat2 - lat1); // deg2rad below
+  var dLon = deg2rad(lon2 - lon1);
+  var a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(deg2rad(lat1)) *
+      Math.cos(deg2rad(lat2)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  var d = R * c; // Distance in km
+  return d;
+}
+
+function deg2rad(deg) {
+  return deg * (Math.PI / 180);
 }
