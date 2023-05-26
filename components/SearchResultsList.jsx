@@ -18,7 +18,7 @@ const Item = ({ item }) => {
       onPress={() => navigation.navigate("CompanyInfo", { company: item })}
     >
       <View style={styles.item}>
-        <Image source={item.icon} style={[styles.icon]} />
+        <Image source={{ uri: item.icon }} style={[styles.icon]} />
         <View style={[styles.info]}>
           <Text style={styles.title}>{item.name}</Text>
           <View style={[styles.containerreview]}>
@@ -65,6 +65,8 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginRight: 20,
+    width: 100,
+    height: 100,
   },
   info: {
     flex: 1,

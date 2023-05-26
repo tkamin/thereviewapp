@@ -111,10 +111,16 @@ export function normalizeGooglePlacesSearchResults(incoming) {
       var result = {};
       result.id = place.place_id;
       result.name = place.name;
-      result.icon = require("../assets/images/example-icon1.png");
+      //result.icon = require("../assets/images/example-icon1.png");
       result.stars = require("../assets/images/5stars.png");
       result.rating = place.rating;
       result.user_ratings_total = place.user_ratings_total;
+      result.icon =
+        "https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&photo_reference=";
+
+      result.icon +=
+        place.photos[0].photo_reference +
+        "&key=AIzaSyD0hLVwxYWa2zWSJHtFnlh7CEqygEYnfvc";
 
       result.distance = getDistanceFromLatLonInMiles(
         location.coords.latitude,
