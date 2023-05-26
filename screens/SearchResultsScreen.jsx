@@ -1,21 +1,67 @@
-import * as React from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, Image, StyleSheet, Button } from "react-native";
 import { ListItem } from "@rneui/themed";
 import TRASearchBar from "../components/TRASearchBar";
 import SearchResultsList from "../components/SearchResultsList";
+import * as Location from "expo-location";
 import { normalizeGooglePlacesSearchResults } from "../utils/normalizers";
 
 const SearchResultsScreen = ({ navigation, route }) => {
-  /*
-  fetch('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=39.9423%2C-105.8110&radius=5000&type=restaurant&key=AIzaSyD0hLVwxYWa2zWSJHtFnlh7CEqygEYnfvc').then((response) => response.json()).then((json) => {
-    return data.names;
-}).catch((error) => {
-    console.error(error);
-});
-*/
+  const [data, setData] = useState(null);
 
+  const [location, setLocation] = useState(null);
+  const [errorMsg, setErrorMsg] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        setErrorMsg("Permission to access location was denied");
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+    })();
+  }, []);
+
+  if (
+    data === null &&
+    location !== null &&
+    location.coords !== null &&
+    location.coords.latitude !== null &&
+    location.coords.longitude !== null
+  ) {
+    var uri =
+      "https://maps.googleapis.com/maps/api/place/nearbysearch/json?radius=10000&type=restaurant&key=AIzaSyD0hLVwxYWa2zWSJHtFnlh7CEqygEYnfvc";
+    if (
+      route.params.searchText &&
+      route.params.searchText !== null &&
+      route.params.searchText !== ""
+    ) {
+      uri += "&keyword=" + route.params.searchText;
+    }
+    uri +=
+      "&location=" +
+      location.coords.latitude +
+      "%2C" +
+      location.coords.longitude;
+
+    console.log(uri);
+    fetch(uri)
+      .then((response) => response.json())
+      .then((data) => setData(data))
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
+  var searchResults = [];
+  /*
   var searchResults = DATA;
-  var searchResults = normalizeGooglePlacesSearchResults(GOOGLE);
+  searchResults = normalizeGooglePlacesSearchResults(GOOGLE);
+  */
+  searchResults = normalizeGooglePlacesSearchResults(data);
 
   return (
     <View style={[styles.container]}>

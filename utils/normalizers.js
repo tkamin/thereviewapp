@@ -102,7 +102,7 @@ export function normalizeGooglePlacesSearchResults(incoming) {
     text = JSON.stringify(location);
   }
 
-  if (!incoming.results) {
+  if (incoming === null || !incoming.results) {
     return normalized;
   }
 
