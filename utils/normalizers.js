@@ -115,12 +115,19 @@ export function normalizeGooglePlacesSearchResults(incoming) {
       result.stars = require("../assets/images/5stars.png");
       result.rating = place.rating;
       result.user_ratings_total = place.user_ratings_total;
+      if (!result.user_ratings_total) {
+        result.user_ratings_total = 0;
+      }
       result.icon =
         "https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&photo_reference=";
 
-      result.icon +=
-        place.photos[0].photo_reference +
-        "&key=AIzaSyD0hLVwxYWa2zWSJHtFnlh7CEqygEYnfvc";
+      if (place.photos && place.photos[0] && place.photos[0].photo_reference) {
+        result.icon +=
+          place.photos[0].photo_reference +
+          "&key=AIzaSyD0hLVwxYWa2zWSJHtFnlh7CEqygEYnfvc";
+      } else {
+        result.icon = place.icon;
+      }
 
       result.distance = getDistanceFromLatLonInMiles(
         location.coords.latitude,
