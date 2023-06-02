@@ -8,6 +8,17 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+
+const GradientIcon = (props) => {
+  var widthShownPx = props.fractionShown * 20 + 2;
+
+  return (
+    <View style={{ width: widthShownPx, height: 24, overflow: "hidden" }}>
+      <Icon name="star" size={24} color="#FEC601" />
+    </View>
+  );
+};
 
 const Item = ({ item }) => {
   const navigation = useNavigation();
@@ -22,8 +33,17 @@ const Item = ({ item }) => {
         <View style={[styles.info]}>
           <Text style={styles.title}>{item.name}</Text>
           <View style={[styles.containerreview]}>
-            <Image source={item.stars} />
             <Text style={styles.reviewinfo}>{item.rating}</Text>
+            {(() => {
+              let remainingStars = item.rating ? item.rating : 0;
+              let container = [];
+              while (remainingStars > 0) {
+                var fraction = remainingStars >= 1 ? 1 : remainingStars;
+                container.push(<GradientIcon fractionShown={fraction} />);
+                remainingStars -= fraction;
+              }
+              return container;
+            })()}
           </View>
           <Text style={styles.distance}>
             {/* TODO: for android, in your android/app/build.gradle replace def jscFlavor = 'org.webkit:android-jsc-intl:+' */}
@@ -86,7 +106,11 @@ const styles = StyleSheet.create({
     color: "#464646",
     fontSize: 12,
     marginTop: 4,
-    marginLeft: 2,
+    marginRight: 5,
+  },
+  stars: {
+    flex: 1,
+    flexDirection: "row",
   },
 });
 
