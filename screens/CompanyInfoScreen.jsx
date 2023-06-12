@@ -1,32 +1,71 @@
-import * as React from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, Image, StyleSheet, Button } from "react-native";
 import PlatformReviewList from "../components/PlatformReviewList";
+import { normalizeGooglePlacesDetailsAddress } from "../utils/normalizers";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+
+const GradientIcon = (props) => {
+  var widthShownPx = props.fractionShown * 20 + 2;
+
+  return (
+    <View style={{ width: widthShownPx, height: 24, overflow: "hidden" }}>
+      <Icon name="star" size={24} color="#FEC601" />
+    </View>
+  );
+};
 
 const Details = ({ item }) => {
+  const [data, setData] = useState(null);
+
   var reviews = {};
 
+  var uri =
+    "https://maps.googleapis.com/maps/api/place/details/json?key=AIzaSyD0hLVwxYWa2zWSJHtFnlh7CEqygEYnfvc";
+  uri += "&place_id=" + item.id;
+
+  if (data === null) {
+    console.log(uri);
+    fetch(uri)
+      .then((response) => response.json())
+      .then((data) => setData(data))
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
+  console.log(data);
   return (
     <View style={styles.container}>
       <View style={styles.item}>
-        <Image source={item.icon} style={[styles.icon]} />
+        <Image source={{ uri: item.icon }} style={[styles.icon]} />
         <View style={[styles.info]}>
           <Text style={styles.title}>{item.name}</Text>
           <View style={[styles.containerreview]}>
-            <Text style={[styles.text]}>
-              Durbar incorporates quality ingredients to our receipes, offering
-              family style food which are prepares with sensitivity and care.
-              Our team speaializes in home made authentic selection from Nepal,
-              India. We belive in authentic and quality food. By the perfect miz
-              and blends of all best spices we always try to spice up your life.
-            </Text>
-            <Text style={[styles.contact]}>(970) 363-7081</Text>
-            <Text style={[styles.contact]}>http://www.durbarbistro.com/</Text>
-            <Text style={[styles.contact]}>dummy@durbarbistro.com</Text>
-            <Text style={[styles.contact]}>
-              {`47 Cooper Creek Way Unit 222
-Winter Park, CO 80482`}{" "}
-              (<Text style={styles.distance}>{item.distance}</Text>)
-            </Text>
+            {data &&
+              data.result &&
+              data.result.editorial_summary &&
+              data.result.editorial_summary.overview && (
+                <Text style={[styles.text]}>
+                  {data.result.editorial_summary.overview}
+                </Text>
+              )}
+            {data && data.result && data.result.formatted_phone_number && (
+              <Text style={[styles.contact]}>
+                {data.result.formatted_phone_number}
+              </Text>
+            )}
+            {data && data.result && data.result.website && (
+              <Text style={[styles.contact]}>{data.result.website}</Text>
+            )}
+            {/*<Text style={[styles.contact]}>dummy@durbarbistro.com</Text>*/}
+            {data &&
+              data.result &&
+              normalizeGooglePlacesDetailsAddress(data) && (
+                <Text style={[styles.contact]}>
+                  {normalizeGooglePlacesDetailsAddress(data)}(
+                  <Text style={styles.distance}>{item.distance}</Text>)
+                </Text>
+              )}
           </View>
         </View>
       </View>
@@ -40,8 +79,17 @@ Winter Park, CO 80482`}{" "}
             </Text>
           </View>
           <View style={[styles.containerstars]}>
-            <Image source={item.stars} />
-            <Text style={styles.reviewinfo}>{item.rating} stars</Text>
+            {(() => {
+              let remainingStars = item.rating ? item.rating : 0;
+              let container = [];
+              while (remainingStars > 0) {
+                var fraction = remainingStars >= 1 ? 1 : remainingStars;
+                container.push(<GradientIcon fractionShown={fraction} />);
+                remainingStars -= fraction;
+              }
+              return container;
+            })()}
+            <Text style={styles.reviewinfo}> {item.rating} stars</Text>
           </View>
           <PlatformReviewList reviews={reviews}></PlatformReviewList>
         </View>
@@ -92,6 +140,8 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginRight: 20,
+    width: 100,
+    height: 100,
   },
   info: {
     flex: 1,

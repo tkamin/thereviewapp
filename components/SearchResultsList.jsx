@@ -64,7 +64,7 @@ const SearchResultsList = ({ results }) => {
       <FlatList
         data={results}
         renderItem={({ item }) => <Item item={item} />}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => (item.id ? item.id : item)}
       />
     </View>
   );

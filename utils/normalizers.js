@@ -168,3 +168,23 @@ function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
 function deg2rad(deg) {
   return deg * (Math.PI / 180);
 }
+
+export function normalizeGooglePlacesDetailsAddress(incoming) {
+  var address = "";
+  if (!incoming.result || !incoming.result.address_components) {
+    return "";
+  }
+  var components = incoming.result.address_components;
+  return (
+    components[0].long_name +
+    " " +
+    components[1].long_name +
+    "\n" +
+    components[2].long_name +
+    ", " +
+    components[4].long_name +
+    ", " +
+    components[6].long_name +
+    " "
+  );
+}
