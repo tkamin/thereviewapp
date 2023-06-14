@@ -111,9 +111,11 @@ export function normalizeGooglePlacesSearchResults(incoming) {
       var result = {};
       result.id = place.place_id;
       result.name = place.name;
-      //result.icon = require("../assets/images/example-icon1.png");
       result.stars = require("../assets/images/5stars.png");
       result.rating = place.rating;
+      if (!result.rating) {
+        result.rating = 0;
+      }
       result.rating_count = place.user_ratings_total;
       if (!result.rating_count) {
         result.rating_count = 0;
@@ -122,6 +124,9 @@ export function normalizeGooglePlacesSearchResults(incoming) {
       source.name = "Google";
       source.icon = require("../assets/images/icons/small-google.png");
       source.rating = place.rating;
+      if (!source.rating) {
+        source.rating = 0;
+      }
       source.rating_count = result.rating_count;
       result.sources = [];
       result.sources.push(source);
@@ -179,21 +184,21 @@ function deg2rad(deg) {
 }
 
 export function normalizeGooglePlacesDetailsAddress(incoming) {
-  var address = "";
+  console.log(incoming.result.address_components);
   if (!incoming.result || !incoming.result.address_components) {
     return "";
   }
   var components = incoming.result.address_components;
-  return (
+  var address =
     components[0].long_name +
     " " +
     components[1].long_name +
     "\n" +
     components[2].long_name +
     ", " +
-    components[4].long_name +
-    ", " +
-    components[6].long_name +
-    " "
-  );
+    components[4].long_name;
+  if (components[6] && components[6].long_name) {
+    address += ", " + components[6].long_name;
+  }
+  return address;
 }

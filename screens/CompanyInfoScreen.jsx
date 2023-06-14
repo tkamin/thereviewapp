@@ -49,7 +49,7 @@ const Details = ({ item }) => {
               data.result &&
               normalizeGooglePlacesDetailsAddress(data) && (
                 <Text style={[styles.contact]}>
-                  {normalizeGooglePlacesDetailsAddress(data)}(
+                  {normalizeGooglePlacesDetailsAddress(data)} (
                   <Text style={styles.distance}>{item.distance}</Text>)
                 </Text>
               )}
