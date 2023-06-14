@@ -7,8 +7,6 @@ import { normalizeGooglePlacesDetailsAddress } from "../utils/normalizers";
 const Details = ({ item }) => {
   const [data, setData] = useState(null);
 
-  var reviews = {};
-
   var uri =
     "https://maps.googleapis.com/maps/api/place/details/json?key=AIzaSyD0hLVwxYWa2zWSJHtFnlh7CEqygEYnfvc";
   uri += "&place_id=" + item.id;
@@ -23,7 +21,8 @@ const Details = ({ item }) => {
       });
   }
 
-  console.log(data);
+  console.log("ITEM");
+  console.log(item);
   return (
     <View style={styles.container}>
       <View style={styles.item}>
@@ -65,14 +64,14 @@ const Details = ({ item }) => {
         <View style={styles.reviews}>
           <View>
             <Text style={[styles.header]}>
-              {item.user_ratings_total.toLocaleString()} Total Reviews
+              {item.rating_count.toLocaleString()} Total Reviews
             </Text>
           </View>
           <View style={[styles.containerstars]}>
             <DynamicStarImage item={item} />
             <Text style={styles.reviewinfo}> {item.rating} stars</Text>
           </View>
-          <PlatformReviewList reviews={reviews}></PlatformReviewList>
+          <PlatformReviewList item={item}></PlatformReviewList>
         </View>
       </View>
     </View>

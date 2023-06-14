@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import DynamicStarImage from "./DynamicStarImage";
 
 const PlatformReviewCard = ({ item }) => {
   const navigation = useNavigation();
@@ -26,7 +27,7 @@ const PlatformReviewCard = ({ item }) => {
                 <Text style={styles.title}>{item.name}</Text>
                 <Text style={styles.distance}>
                   {/* TODO: for android, in your android/app/build.gradle replace def jscFlavor = 'org.webkit:android-jsc-intl:+'00 */}
-                  {item.user_ratings_total.toLocaleString()} reviews
+                  {item.rating_count.toLocaleString()} reviews
                 </Text>
               </View>
               <View style={[styles.rightarrow]}>
@@ -37,7 +38,7 @@ const PlatformReviewCard = ({ item }) => {
               </View>
             </View>
             <View style={[styles.containerreview]}>
-              <Image source={item.stars} />
+              <DynamicStarImage item={item} />
               <Text style={styles.reviewinfo}>{item.rating} stars</Text>
             </View>
           </View>
@@ -47,9 +48,7 @@ const PlatformReviewCard = ({ item }) => {
   );
 };
 
-const PlatformReviewList = ({ reviews }) => {
-  const navigation = useNavigation();
-
+const PlatformReviewList = ({ item }) => {
   return (
     <View style={[styles.container]}>
       <FlatList
@@ -58,7 +57,7 @@ const PlatformReviewList = ({ reviews }) => {
           width: "100%",
           marginTop: 20,
         }}
-        data={DATA}
+        data={item.sources}
         renderItem={({ item }) => <PlatformReviewCard item={item} />}
         keyExtractor={(item) => item.id}
       />
@@ -73,7 +72,7 @@ const DATA = [
     icon: require("../assets/images/icons/small-tra.png"),
     stars: require("../assets/images/5stars.png"),
     rating: 5,
-    user_ratings_total: 231,
+    rating_count: 231,
     review_source_count: 2,
     distance: "6.4 mi",
   },
@@ -83,7 +82,7 @@ const DATA = [
     icon: require("../assets/images/icons/small-google.png"),
     stars: require("../assets/images/5stars.png"),
     rating: 5,
-    user_ratings_total: 12345,
+    rating_count: 12345,
     review_source_count: 3,
     distance: "6.1 mi",
   },
@@ -93,7 +92,7 @@ const DATA = [
     icon: require("../assets/images/icons/small-yelp.png"),
     stars: require("../assets/images/4.5stars.png"),
     rating: 4.6,
-    user_ratings_total: 1111,
+    rating_count: 1111,
     review_source_count: 3,
     distance: "6.2 mi",
   },
@@ -103,7 +102,7 @@ const DATA = [
     icon: require("../assets/images/icons/small-tra.png"),
     stars: require("../assets/images/4.5stars.png"),
     rating: 4.5,
-    user_ratings_total: 743,
+    rating_count: 743,
     review_source_count: 2,
     distance: "5.8 mi",
   },
@@ -113,7 +112,7 @@ const DATA = [
     icon: require("../assets/images/icons/small-google.png"),
     stars: require("../assets/images/4.5stars.png"),
     rating: 4.5,
-    user_ratings_total: 1289,
+    rating_count: 1289,
     review_source_count: 3,
     distance: "6.1 mi",
   },
@@ -123,7 +122,7 @@ const DATA = [
     icon: require("../assets/images/icons/small-yelp.png"),
     stars: require("../assets/images/4.5stars.png"),
     rating: 4.4,
-    user_ratings_total: 86,
+    rating_count: 86,
     review_source_count: 2,
     distance: "6.2 mi",
   },

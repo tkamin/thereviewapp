@@ -9,7 +9,7 @@ Normalized:
     icon: require("../assets/images/example-icon1.png"),
     stars: require("../assets/images/5stars.png"),
     rating: 5,
-    user_ratings_total: 231,
+    rating_count: 231,
     review_source_count: 2,
     distance: "6.4 mi",
   },
@@ -71,7 +71,7 @@ Normalized:
         "point_of_interest",
         "establishment",
       ],
-      user_ratings_total: 1452,
+      rating_count: 1452,
       vicinity: "3530 County Road 83, Tabernash",
     }
 ]
@@ -114,10 +114,18 @@ export function normalizeGooglePlacesSearchResults(incoming) {
       //result.icon = require("../assets/images/example-icon1.png");
       result.stars = require("../assets/images/5stars.png");
       result.rating = place.rating;
-      result.user_ratings_total = place.user_ratings_total;
-      if (!result.user_ratings_total) {
-        result.user_ratings_total = 0;
+      result.rating_count = place.user_ratings_total;
+      if (!result.rating_count) {
+        result.rating_count = 0;
       }
+      var source = {};
+      source.name = "Google";
+      source.icon = require("../assets/images/icons/small-google.png");
+      source.rating = place.rating;
+      source.rating_count = result.rating_count;
+      result.sources = [];
+      result.sources.push(source);
+
       result.icon =
         "https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&photo_reference=";
 
@@ -138,6 +146,7 @@ export function normalizeGooglePlacesSearchResults(incoming) {
       result.distance =
         (Math.round(result.distance * 100) / 100).toFixed(1) + " mi";
       result.review_source_count = 1;
+
       normalized.push(result);
     });
   }

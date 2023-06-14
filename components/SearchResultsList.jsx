@@ -28,7 +28,7 @@ const Item = ({ item }) => {
           </View>
           <Text style={styles.distance}>
             {/* TODO: for android, in your android/app/build.gradle replace def jscFlavor = 'org.webkit:android-jsc-intl:+' */}
-            {item.user_ratings_total.toLocaleString()} reviews (
+            {item.rating_count.toLocaleString()} reviews (
             {item.review_source_count} sources)
           </Text>
           <Text style={styles.distance}>{item.distance}</Text>
