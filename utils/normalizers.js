@@ -71,7 +71,7 @@ Normalized:
         "point_of_interest",
         "establishment",
       ],
-      rating_count: 1452,
+      user_ratings_total: 1452,
       vicinity: "3530 County Road 83, Tabernash",
     }
 ]

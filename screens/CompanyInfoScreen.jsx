@@ -21,8 +21,6 @@ const Details = ({ item }) => {
       });
   }
 
-  console.log("ITEM");
-  console.log(item);
   return (
     <View style={styles.container}>
       <View style={styles.item}>

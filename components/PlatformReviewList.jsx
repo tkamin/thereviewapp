@@ -59,7 +59,7 @@ const PlatformReviewList = ({ item }) => {
         }}
         data={item.sources}
         renderItem={({ item }) => <PlatformReviewCard item={item} />}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.name}
       />
     </View>
   );
