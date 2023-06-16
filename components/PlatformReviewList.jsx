@@ -6,17 +6,28 @@ import {
   Text,
   Image,
   TouchableOpacity,
+  Linking,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import DynamicStarImage from "./DynamicStarImage";
 
+const openURL = (url) => {
+  if (url) {
+    Linking.openURL(url).catch((err) =>
+      console.error("An error occurred", err)
+    );
+  }
+};
+
 const PlatformReviewCard = ({ item }) => {
-  const navigation = useNavigation();
+  console.log(item);
 
   return (
     <TouchableOpacity
       style={[{ flex: 1, width: "100%" }]}
-      onPress={() => navigation.navigate("CompanyInfo", { company: item })}
+      onPress={() => {
+        openURL(item.url);
+      }}
     >
       <View style={styles.container}>
         <View style={styles.item}>
@@ -37,10 +48,12 @@ const PlatformReviewCard = ({ item }) => {
                 />
               </View>
             </View>
-            <View style={[styles.containerreview]}>
-              <DynamicStarImage item={item} />
-              <Text style={styles.reviewinfo}>{item.rating} stars</Text>
-            </View>
+            {item.rating_count > 0 && (
+              <View style={[styles.containerreview]}>
+                <DynamicStarImage item={item} />
+                <Text style={styles.reviewinfo}>{item.rating} stars</Text>
+              </View>
+            )}
           </View>
         </View>
       </View>

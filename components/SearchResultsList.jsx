@@ -22,10 +22,12 @@ const Item = ({ item }) => {
         <Image source={{ uri: item.icon }} style={[styles.icon]} />
         <View style={[styles.info]}>
           <Text style={styles.title}>{item.name}</Text>
-          <View style={[styles.containerreview]}>
-            <Text style={styles.reviewinfo}>{item.rating}</Text>
-            <DynamicStarImage item={item} />
-          </View>
+          {item.rating_count > 0 && (
+            <View style={[styles.containerreview]}>
+              <Text style={styles.reviewinfo}>{item.rating}</Text>
+              <DynamicStarImage item={item} />
+            </View>
+          )}
           <Text style={styles.distance}>
             {/* TODO: for android, in your android/app/build.gradle replace def jscFlavor = 'org.webkit:android-jsc-intl:+' */}
             {item.rating_count.toLocaleString()} reviews (

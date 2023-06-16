@@ -19,6 +19,17 @@ const Details = ({ item }) => {
       .catch((error) => {
         console.error(error);
       });
+  } else {
+    if (
+      data &&
+      data.result &&
+      data.result.url &&
+      item.sources &&
+      item.sources[0] &&
+      item.sources[0].name == "Google"
+    ) {
+      item.sources[0].url = data.result.url;
+    }
   }
 
   return (
@@ -65,10 +76,12 @@ const Details = ({ item }) => {
               {item.rating_count.toLocaleString()} Total Reviews
             </Text>
           </View>
-          <View style={[styles.containerstars]}>
-            <DynamicStarImage item={item} />
-            <Text style={styles.reviewinfo}> {item.rating} stars</Text>
-          </View>
+          {item.rating_count > 0 && (
+            <View style={[styles.containerstars]}>
+              <DynamicStarImage item={item} />
+              <Text style={styles.reviewinfo}> {item.rating} stars</Text>
+            </View>
+          )}
           <PlatformReviewList item={item}></PlatformReviewList>
         </View>
       </View>
