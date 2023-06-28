@@ -5,10 +5,9 @@ import TRASearchBar from "../components/TRASearchBar";
 import SearchResultsList from "../components/SearchResultsList";
 import * as Location from "expo-location";
 import { normalizeGooglePlacesSearchResults } from "../utils/normalizers";
+import useGoogleNearbySearch from "../hooks/useGooglePlaces";
 
 const SearchResultsScreen = ({ navigation, route }) => {
-  const [data, setData] = useState(null);
-
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
 
@@ -25,43 +24,17 @@ const SearchResultsScreen = ({ navigation, route }) => {
     })();
   }, []);
 
-  if (
-    data === null &&
-    location !== null &&
-    location.coords !== null &&
-    location.coords.latitude !== null &&
-    location.coords.longitude !== null
-  ) {
-    var uri =
-      "https://maps.googleapis.com/maps/api/place/nearbysearch/json?radius=10000&type=restaurant&key=AIzaSyD0hLVwxYWa2zWSJHtFnlh7CEqygEYnfvc";
-    if (
-      route.params.searchText &&
-      route.params.searchText !== null &&
-      route.params.searchText !== ""
-    ) {
-      uri += "&keyword=" + route.params.searchText;
-    }
-    uri +=
-      "&location=" +
-      location.coords.latitude +
-      "%2C" +
-      location.coords.longitude;
-
-    console.log(uri);
-    fetch(uri)
-      .then((response) => response.json())
-      .then((data) => setData(data))
-      .catch((error) => {
-        console.error(error);
-      });
-  }
+  const { googleData, loading, error } = useGoogleNearbySearch(
+    route.params.searchText,
+    location
+  );
 
   var searchResults = [];
   /*
   var searchResults = DATA;
   searchResults = normalizeGooglePlacesSearchResults(GOOGLE);
   */
-  searchResults = normalizeGooglePlacesSearchResults(data);
+  searchResults = normalizeGooglePlacesSearchResults(googleData);
 
   return (
     <View style={[styles.container]}>

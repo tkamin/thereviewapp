@@ -95,6 +95,10 @@ export function normalizeGooglePlacesSearchResults(incoming) {
     })();
   }, []);
 
+  if (incoming === undefined || incoming === null) {
+    return normalized;
+  }
+
   let text = "Waiting..";
   if (errorMsg) {
     text = errorMsg;
