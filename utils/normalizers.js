@@ -5,9 +5,9 @@ import * as Location from "expo-location";
 Normalized:
   {
     id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
+    tripAdvisorLocationId: '',
     name: "Durbar - Nepalese & Indian Bistro",
     icon: require("../assets/images/example-icon1.png"),
-    stars: require("../assets/images/5stars.png"),
     rating: 5,
     rating_count: 231,
     review_source_count: 2,
@@ -95,18 +95,7 @@ export function normalizeGooglePlacesSearchResults(incoming) {
     })();
   }, []);
 
-  if (incoming === undefined || incoming === null) {
-    return normalized;
-  }
-
-  let text = "Waiting..";
-  if (errorMsg) {
-    text = errorMsg;
-  } else if (location) {
-    text = JSON.stringify(location);
-  }
-
-  if (incoming === null || !incoming.results) {
+  if (incoming === undefined || incoming === null || !incoming.results) {
     return normalized;
   }
 
@@ -115,7 +104,6 @@ export function normalizeGooglePlacesSearchResults(incoming) {
       var result = {};
       result.id = place.place_id;
       result.name = place.name;
-      result.stars = require("../assets/images/5stars.png");
       result.rating = place.rating;
       if (!result.rating) {
         result.rating = 0;
@@ -124,16 +112,6 @@ export function normalizeGooglePlacesSearchResults(incoming) {
       if (!result.rating_count) {
         result.rating_count = 0;
       }
-      var source = {};
-      source.name = "Google";
-      source.icon = require("../assets/images/icons/small-google.png");
-      source.rating = place.rating;
-      if (!source.rating) {
-        source.rating = 0;
-      }
-      source.rating_count = result.rating_count;
-      result.sources = [];
-      result.sources.push(source);
 
       result.icon =
         "https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&photo_reference=";
@@ -155,6 +133,17 @@ export function normalizeGooglePlacesSearchResults(incoming) {
       result.distance =
         (Math.round(result.distance * 100) / 100).toFixed(1) + " mi";
       result.review_source_count = 1;
+
+      var source = {};
+      source.name = "Google";
+      source.icon = require("../assets/images/icons/small-google.png");
+      source.rating = place.rating;
+      if (!source.rating) {
+        source.rating = 0;
+      }
+      source.rating_count = result.rating_count;
+      result.sources = [];
+      result.sources.push(source);
 
       normalized.push(result);
     });
@@ -188,7 +177,7 @@ function deg2rad(deg) {
 }
 
 export function normalizeGooglePlacesDetailsAddress(incoming) {
-  console.log(incoming.result.address_components);
+  //console.log(incoming.result.address_components);
   if (!incoming.result || !incoming.result.address_components) {
     return "";
   }
@@ -205,4 +194,97 @@ export function normalizeGooglePlacesDetailsAddress(incoming) {
     address += ", " + components[6].long_name;
   }
   return address;
+}
+
+/* 
+Normalized:
+  {
+    id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
+    tripAdvisorLocationId: '',
+    address: '6827 County Road 51, Tabernash, CO 80478'
+    name: "Durbar - Nepalese & Indian Bistro",
+    icon: require("../assets/images/example-icon1.png"),
+    stars: require("../assets/images/5stars.png"),
+    rating: 5,
+    rating_count: 231,
+    review_source_count: 2,
+    distance: "6.4 mi",
+  },
+*/
+
+/* from 
+{
+  "data": [
+    {
+      "location_id": "3915376",
+      "name": "Bistro 28",
+      "distance": "1.7383757135990503",
+      "bearing": "west",
+      "address_obj": {
+        "street1": "6827 County Road 51",
+        "city": "Tabernash",
+        "state": "Colorado",
+        "country": "United States",
+        "postalcode": "80478",
+        "address_string": "6827 County Road 51, Tabernash, CO 80478"
+      }
+    },
+  ]
+}
+*/
+export function normalizeTripAdvisorSearchResults(incoming) {
+  var normalized = [];
+
+  const [location, setLocation] = useState(null);
+  const [errorMsg, setErrorMsg] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        setErrorMsg("Permission to access location was denied");
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+    })();
+  }, []);
+
+  if (incoming === undefined || incoming === null || !incoming.data) {
+    return normalized;
+  }
+
+  if (location && location.coords) {
+    incoming.data.map((location) => {
+      var result = {};
+      result.id = location.location_id;
+      result.tripAdvisorLocationId = location.location_id;
+      result.name = location.name;
+      result.rating = 0;
+      result.rating_count = 0;
+      result.distance =
+        (Math.round(location.distance * 100) / 100).toFixed(1) + " mi";
+      result.icon = require("../assets/images/example-icon1.png");
+      result.review_source_count = 1;
+      result.address = "";
+      if (location.address_obj && location.address_obj.address_string) {
+        result.address = location.address_obj.address_string;
+      }
+
+      var source = {};
+      source.name = "Trip Advisor";
+      source.icon = require("../assets/images/icons/small-trip-advisor.png");
+      source.rating = 0;
+      source.rating_count = 0;
+      if (!result.sources) {
+        result.sources = [];
+      }
+      result.sources.push(source);
+
+      normalized.push(result);
+    });
+  }
+
+  return normalized;
 }

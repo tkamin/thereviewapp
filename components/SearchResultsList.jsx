@@ -19,7 +19,12 @@ const Item = ({ item }) => {
       onPress={() => navigation.navigate("CompanyInfo", { company: item })}
     >
       <View style={styles.item}>
-        <Image source={{ uri: item.icon }} style={[styles.icon]} />
+        {Object.prototype.toString.call(item.icon) === "[object String]" && (
+          <Image source={{ uri: item.icon }} style={[styles.icon]} />
+        )}
+        {Object.prototype.toString.call(item.icon) !== "[object String]" && (
+          <Image source={item.icon} style={[styles.icon]} />
+        )}
         <View style={[styles.info]}>
           <Text style={styles.title}>{item.name}</Text>
           {item.rating_count > 0 && (

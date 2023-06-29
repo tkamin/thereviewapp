@@ -4,8 +4,12 @@ import { ListItem } from "@rneui/themed";
 import TRASearchBar from "../components/TRASearchBar";
 import SearchResultsList from "../components/SearchResultsList";
 import * as Location from "expo-location";
-import { normalizeGooglePlacesSearchResults } from "../utils/normalizers";
+import {
+  normalizeGooglePlacesSearchResults,
+  normalizeTripAdvisorSearchResults,
+} from "../utils/normalizers";
 import useGoogleNearbySearch from "../hooks/useGooglePlaces";
+import { useTripAdvisorNearbySearch } from "../hooks/useTripAdvisor";
 
 const SearchResultsScreen = ({ navigation, route }) => {
   const [location, setLocation] = useState(null);
@@ -24,17 +28,20 @@ const SearchResultsScreen = ({ navigation, route }) => {
     })();
   }, []);
 
+  var searchResults = [];
+
+  /*
   const { googleData, loading, error } = useGoogleNearbySearch(
     route.params.searchText,
     location
   );
-
-  var searchResults = [];
-  /*
-  var searchResults = DATA;
-  searchResults = normalizeGooglePlacesSearchResults(GOOGLE);
-  */
   searchResults = normalizeGooglePlacesSearchResults(googleData);
+*/
+
+  const { tripAdvisorSearchResults, loading, error } =
+    useTripAdvisorNearbySearch(location);
+  searchResults = normalizeTripAdvisorSearchResults(tripAdvisorSearchResults);
+  //console.log(searchResults);
 
   return (
     <View style={[styles.container]}>

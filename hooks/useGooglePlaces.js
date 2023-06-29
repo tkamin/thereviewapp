@@ -11,31 +11,31 @@ const useGoogleNearbySearch = (searchText, location) => {
     uri += "&keyword=" + searchText;
   }
 
-  if (
-    location !== null &&
-    location.coords !== null &&
-    location.coords.latitude !== null &&
-    location.coords.longitude !== null
-  ) {
-    uri +=
-      "&location=" +
-      location.coords.latitude +
-      "%2C" +
-      location.coords.longitude;
-  }
-
   useEffect(() => {
-    fetch(uri)
-      .then((response) => response.json())
-      .then((data) => {
-        setError(data.error);
-        setGoogleData(data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, [uri]);
+    if (
+      location !== null &&
+      location.coords !== null &&
+      location.coords.latitude !== null &&
+      location.coords.longitude !== null
+    ) {
+      uri +=
+        "&location=" +
+        location.coords.latitude +
+        "%2C" +
+        location.coords.longitude;
+      console.log(uri);
+      fetch(uri)
+        .then((response) => response.json())
+        .then((data) => {
+          setError(data.error);
+          setGoogleData(data);
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+  }, [uri, location]);
 
   return { googleData, loading, error };
 };
