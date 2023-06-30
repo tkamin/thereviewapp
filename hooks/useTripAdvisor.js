@@ -7,8 +7,7 @@ const useTripAdvisorSearch = (searchText, location) => {
 };
 
 const useTripAdvisorNearbySearch = (location) => {
-  const [tripAdvisorSearchResults, setTripAdvisorSearchResults] =
-    useState(null);
+  const [tripAdvisorData, setTripAdvisorData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -38,7 +37,7 @@ const useTripAdvisorNearbySearch = (location) => {
         .then((response) => response.json())
         .then((data) => {
           setError(data.error);
-          setTripAdvisorSearchResults(data);
+          setTripAdvisorData(data);
           setLoading(false);
         })
         .catch((error) => {
@@ -47,7 +46,7 @@ const useTripAdvisorNearbySearch = (location) => {
     }
   }, [uri, location]);
 
-  return { tripAdvisorSearchResults, loading, error };
+  return { tripAdvisorData, loading, error };
 };
 
 export { useTripAdvisorSearch, useTripAdvisorNearbySearch };

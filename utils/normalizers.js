@@ -6,6 +6,7 @@ Normalized:
   {
     id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
     tripAdvisorLocationId: '',
+    address: "47 Cooper Creek Way #222, Winter Park",
     name: "Durbar - Nepalese & Indian Bistro",
     icon: require("../assets/images/example-icon1.png"),
     rating: 5,
@@ -104,6 +105,7 @@ export function normalizeGooglePlacesSearchResults(incoming) {
       var result = {};
       result.id = place.place_id;
       result.name = place.name;
+      result.address = place.vicinity;
       result.rating = place.rating;
       if (!result.rating) {
         result.rating = 0;
@@ -232,7 +234,7 @@ Normalized:
   ]
 }
 */
-export function normalizeTripAdvisorSearchResults(incoming) {
+export function normalizeTripAdvisorSearchResults(incoming, searchResults) {
   var normalized = [];
 
   const [location, setLocation] = useState(null);
@@ -287,4 +289,113 @@ export function normalizeTripAdvisorSearchResults(incoming) {
   }
 
   return normalized;
+}
+
+export function mergeResultsOnAddress(set1, set2) {
+  var merged = [];
+  if (
+    (set1 === undefined || set1 === null) &&
+    (set2 === undefined || set2 === null)
+  ) {
+    return merged;
+  }
+
+  if (set1 === undefined || set1 === null) {
+    return set2;
+  }
+
+  if (set2 === undefined || set2 === null) {
+    return set1;
+  }
+
+  var set2Copy = set2.map((x) => x);
+
+  var hasNumber = /\d/;
+
+  var notFound = [];
+  set1.forEach(function (item, index) {
+    if (item.address === undefined || item.address === null) {
+      notFound.push(item);
+      return;
+    }
+    const addressFirstPiece = item.address.substring(
+      0,
+      item.address.indexOf(",")
+    );
+    if (!hasNumber.test(addressFirstPiece)) {
+      notFound.push(item);
+      return;
+    }
+
+    let matchArray = set2Copy.filter(function (item2, index) {
+      if (item2.address === undefined || item2.address === null) {
+        return false;
+      }
+
+      const address2FirstPiece = item2.address.substring(
+        0,
+        item2.address.indexOf(",")
+      );
+      if (!hasNumber.test(address2FirstPiece)) {
+        return false;
+      }
+
+      if (addressFirstPiece.normalize() === address2FirstPiece.normalize()) {
+        return true;
+      }
+    });
+
+    if (matchArray.length !== 1) {
+      notFound.push(item);
+      return;
+    }
+
+    merged.push(mergeResults(item, matchArray[0]));
+    set2Copy = set2Copy.filter((item) => !matchArray.includes(item));
+  });
+
+  merged = merged.concat(notFound, set2Copy);
+  return merged;
+}
+
+// set preference to result1, except where result2 contains better information
+// copy sources as well
+export function mergeResults(result1, result2) {
+  if (result1 === undefined || result1 === null) {
+    return result2;
+  }
+  if (result2 === undefined || result2 === null) {
+    return result1;
+  }
+
+  let mergedResult = JSON.parse(JSON.stringify(result1));
+
+  // distance transfer, address transfer, source transfer, icon transfer,
+  if (
+    (mergedResult.distance === undefined || mergedResult.distance === 0) &&
+    result2.distance !== undefined
+  ) {
+    mergedResult.distance = result2.distance;
+  }
+
+  if (
+    result2.address !== undefined &&
+    (mergedResult.address === undefined ||
+      result2.address.length > mergedResult.address.length)
+  ) {
+    mergedResult.address = result2.address;
+  }
+
+  if (mergedResult.sources === undefined) {
+    mergedResult.sources = result2.sources;
+  } else if (result2.sources !== undefined) {
+    mergedResult.sources = mergedResult.sources.concat(result2.sources);
+    mergedResult.review_source_count = mergedResult.sources.length;
+  }
+
+  if (result2.icon !== undefined && mergedResult.icon === undefined) {
+    mergedResult.icon = result2.icon;
+  }
+
+  return mergedResult;
 }

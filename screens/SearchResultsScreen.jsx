@@ -5,6 +5,7 @@ import TRASearchBar from "../components/TRASearchBar";
 import SearchResultsList from "../components/SearchResultsList";
 import * as Location from "expo-location";
 import {
+  mergeResultsOnAddress,
   normalizeGooglePlacesSearchResults,
   normalizeTripAdvisorSearchResults,
 } from "../utils/normalizers";
@@ -30,18 +31,19 @@ const SearchResultsScreen = ({ navigation, route }) => {
 
   var searchResults = [];
 
-  /*
-  const { googleData, loading, error } = useGoogleNearbySearch(
+  const { googleData, loading1, error1 } = useGoogleNearbySearch(
     route.params.searchText,
     location
   );
   searchResults = normalizeGooglePlacesSearchResults(googleData);
-*/
 
-  const { tripAdvisorSearchResults, loading, error } =
+  const { tripAdvisorData, loading2, error2 } =
     useTripAdvisorNearbySearch(location);
-  searchResults = normalizeTripAdvisorSearchResults(tripAdvisorSearchResults);
-  //console.log(searchResults);
+  tripAdvisorSearchResults = normalizeTripAdvisorSearchResults(tripAdvisorData);
+  searchResults = mergeResultsOnAddress(
+    searchResults,
+    tripAdvisorSearchResults
+  );
 
   return (
     <View style={[styles.container]}>
