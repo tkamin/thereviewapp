@@ -40,4 +40,6 @@ const useGoogleNearbySearch = (searchText, location) => {
   return { googleData, loading, error };
 };
 
-export default useGoogleNearbySearch;
+const useGoogleDetails = (ids) => {};
+
+export default { useGoogleNearbySearch, useGoogleDetails };
