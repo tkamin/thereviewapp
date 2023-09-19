@@ -4,7 +4,19 @@ import { ListItem } from "@rneui/themed";
 import TRASearchBar from "../components/TRASearchBar";
 import SearchResultsList from "../components/SearchResultsList";
 import * as Location from "expo-location";
-import { useSearch } from "../hooks/useSearch";
+import { useSearch, search } from "../hooks/useSearch";
+import {
+  normalizeGooglePlacesSearchResults,
+  normalizeTripAdvisorSearchResults,
+  mergeResultsOnAddress,
+  mergeGoogleDetailsIntoResults,
+} from "../utils/normalizers";
+import {
+  useGoogleNearbySearch,
+  useGoogleDetails,
+  fetchGoogleDetails,
+} from "../hooks/useGooglePlaces";
+import { useTripAdvisorNearbySearch } from "../hooks/useTripAdvisor";
 
 const SearchResultsScreen = ({ navigation, route }) => {
   const [location, setLocation] = useState(null);
@@ -23,7 +35,27 @@ const SearchResultsScreen = ({ navigation, route }) => {
     })();
   }, []);
 
-  var searchResults = useSearch(location, route.params.searchText);
+  var searchResults = [];
+
+  const { googleData, loading1, error1 } = useGoogleNearbySearch(
+    route.params.searchText,
+    location
+  );
+
+  searchResults = normalizeGooglePlacesSearchResults(googleData);
+  searchResults = searchResults.slice(0, 2);
+  // TODO: move useGoogleDetails calls into the .then in useGoogleNearbySearch
+  var googleDetails = useGoogleDetails(searchResults);
+  searchResults = mergeGoogleDetailsIntoResults(searchResults, googleDetails);
+  console.log(searchResults);
+
+  const { tripAdvisorData, loading2, error2 } =
+    useTripAdvisorNearbySearch(location);
+  tripAdvisorSearchResults = normalizeTripAdvisorSearchResults(tripAdvisorData);
+  searchResults = mergeResultsOnAddress(
+    searchResults,
+    tripAdvisorSearchResults
+  );
 
   return (
     <View style={[styles.container]}>

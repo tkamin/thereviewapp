@@ -399,3 +399,198 @@ export function mergeResults(result1, result2) {
 
   return mergedResult;
 }
+
+/* details:
+[
+  {
+    html_attributions: [],
+    result: {
+      formatted_phone_number: "(970) 887-9797",
+      place_id: "ChIJ6W1eJ6MxaocR9EMY0Y5VrZo",
+    },
+    status: "OK",
+  },
+  ...
+]
+*/
+export function mergeGoogleDetailsIntoResults(results, details) {
+  if (results === undefined || results === null) {
+    return [];
+  }
+  if (
+    details === undefined ||
+    details === null ||
+    !Array.isArray(details) ||
+    details.length === 0
+  ) {
+    return results;
+  }
+
+  detailsBare = JSON.parse(JSON.stringify(details)); //copy details
+  detailsBare = detailsBare.map((detail) => {
+    detail.result.id = detail.result.place_id;
+    delete detail.result.place_id;
+    return detail.result;
+  });
+
+  var hash = new Map();
+  results.concat(detailsBare).forEach(function (obj) {
+    hash.set(obj.id, Object.assign(hash.get(obj.id) || {}, obj));
+  });
+  return Array.from(hash.values());
+}
+
+[
+  {
+    html_attributions: [],
+    result: {
+      formatted_phone_number: "(970) 887-9797",
+      place_id: "ChIJ6W1eJ6MxaocR9EMY0Y5VrZo",
+    },
+    status: "OK",
+  },
+  {
+    html_attributions: [],
+    result: {
+      formatted_phone_number: "(970) 531-5400",
+      place_id: "ChIJU7HFkJ40aocR0Vw3Yu97Rdg",
+    },
+    status: "OK",
+  },
+  {
+    html_attributions: [],
+    result: {
+      formatted_phone_number: "(970) 557-4211",
+      place_id: "ChIJW3WWKJovaocRe2WbXXGmkY8",
+    },
+    status: "OK",
+  },
+  {
+    html_attributions: [],
+    result: {
+      formatted_phone_number: "(970) 726-5332",
+      place_id: "ChIJWafwEtM0aocRk7xiQsnAAng",
+    },
+    status: "OK",
+  },
+  {
+    html_attributions: [],
+    result: {
+      formatted_phone_number: "(970) 363-7081",
+      place_id: "ChIJd9V5ntM0aocR99tsVmy6snA",
+    },
+    status: "OK",
+  },
+  {
+    html_attributions: [],
+    result: {
+      formatted_phone_number: "(720) 937-7750",
+      place_id: "ChIJIS2x4oE1aocRhT_GeHl4Ff0",
+    },
+    status: "OK",
+  },
+  {
+    html_attributions: [],
+    result: {
+      formatted_phone_number: "(970) 363-7535",
+      place_id: "ChIJlRzRFVg1aocRsUU-6dJ70eA",
+    },
+    status: "OK",
+  },
+  {
+    html_attributions: [],
+    result: {
+      formatted_phone_number: "(970) 726-5633",
+      place_id: "ChIJLz2SkEwzaocRXPPHArCJXKs",
+    },
+    status: "OK",
+  },
+  {
+    html_attributions: [],
+    result: {
+      formatted_phone_number: "(970) 363-7634",
+      place_id: "ChIJ6ciFF8Q1aocRIkDnI2j9sG4",
+    },
+    status: "OK",
+  },
+  {
+    html_attributions: [],
+    result: {
+      formatted_phone_number: "(970) 887-3518",
+      place_id: "ChIJ_T8XJRgvaocR4Hl3mZ9dlEQ",
+    },
+    status: "OK",
+  },
+  {
+    html_attributions: [],
+    result: {
+      formatted_phone_number: "(970) 726-4430",
+      place_id: "ChIJGw9AvE8yaocR03YeGV2MhI8",
+    },
+    status: "OK",
+  },
+  {
+    html_attributions: [],
+    result: {
+      formatted_phone_number: "(970) 726-4021",
+      place_id: "ChIJq1j1HMw0aocR0ZN5-XavVpE",
+    },
+    status: "OK",
+  },
+  {
+    html_attributions: [],
+    result: {
+      formatted_phone_number: "(970) 887-2152 ext. 4122",
+      place_id: "ChIJKSBV3psxaocRT8xj4lxpwoo",
+    },
+    status: "OK",
+  },
+  {
+    html_attributions: [],
+    result: {
+      formatted_phone_number: "(970) 726-1172",
+      place_id: "ChIJzamqvs00aocRu3PCIxnhvoo",
+    },
+    status: "OK",
+  },
+  {
+    html_attributions: [],
+    result: {
+      formatted_phone_number: "(970) 726-8646",
+      place_id: "ChIJfVneEJ00aocRknf5-udWiIw",
+    },
+    status: "OK",
+  },
+  {
+    html_attributions: [],
+    result: {
+      formatted_phone_number: "(970) 509-9535",
+      place_id: "ChIJWTma8v0vaocRgqDpHd4i7BY",
+    },
+    status: "OK",
+  },
+  {
+    html_attributions: [],
+    result: {
+      formatted_phone_number: "(970) 726-0202",
+      place_id: "ChIJocCuCNM0aocRPYRdFNFY7Ek",
+    },
+    status: "OK",
+  },
+  {
+    html_attributions: [],
+    result: {
+      formatted_phone_number: "(970) 460-9800",
+      place_id: "ChIJd9V5ntM0aocR4MfOgXfoChA",
+    },
+    status: "OK",
+  },
+  {
+    html_attributions: [],
+    result: {
+      formatted_phone_number: "(631) 252-2552",
+      place_id: "ChIJtYbb6sM1aocR0Oa63ocIhaM",
+    },
+    status: "OK",
+  },
+];
