@@ -1,6 +1,3 @@
-import React, { useState, useEffect } from "react";
-import * as Location from "expo-location";
-
 /* 
 Normalized:
   {
@@ -77,79 +74,65 @@ Normalized:
     }
 ]
 */
-export function normalizeGooglePlacesSearchResults(incoming) {
+export function normalizeGooglePlacesSearchResults(incoming, location) {
   var normalized = [];
-
-  const [location, setLocation] = useState(null);
-  const [errorMsg, setErrorMsg] = useState(null);
-
-  useEffect(() => {
-    (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        setErrorMsg("Permission to access location was denied");
-        return;
-      }
-
-      let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
-    })();
-  }, []);
 
   if (incoming === undefined || incoming === null || !incoming.results) {
     return normalized;
   }
 
-  if (location && location.coords) {
-    incoming.results.map((place) => {
-      var result = {};
-      result.id = place.place_id;
-      result.name = place.name;
-      result.address = place.vicinity;
-      result.rating = place.rating;
-      if (!result.rating) {
-        result.rating = 0;
-      }
-      result.rating_count = place.user_ratings_total;
-      if (!result.rating_count) {
-        result.rating_count = 0;
-      }
-
-      result.icon =
-        "https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&photo_reference=";
-
-      if (place.photos && place.photos[0] && place.photos[0].photo_reference) {
-        result.icon +=
-          place.photos[0].photo_reference +
-          "&key=AIzaSyD0hLVwxYWa2zWSJHtFnlh7CEqygEYnfvc";
-      } else {
-        result.icon = place.icon;
-      }
-
-      result.distance = getDistanceFromLatLonInMiles(
-        location.coords.latitude,
-        location.coords.longitude,
-        place.geometry.location.lat,
-        place.geometry.location.lng
-      );
-      result.distance =
-        (Math.round(result.distance * 100) / 100).toFixed(1) + " mi";
-      result.review_source_count = 1;
-
-      var source = {};
-      source.name = "Google";
-      source.icon = require("../assets/images/icons/small-google.png");
-      source.rating = place.rating;
-      if (!source.rating) {
-        source.rating = 0;
-      }
-      source.rating_count = result.rating_count;
-      result.sources = [];
-      result.sources.push(source);
-
-      normalized.push(result);
-    });
+  if (!location || !location.coords) {
+    return normalized;
   }
+
+  incoming.results.map((place) => {
+    var result = {};
+    result.id = place.place_id;
+    result.name = place.name;
+    result.address = place.vicinity;
+    result.rating = place.rating;
+    if (!result.rating) {
+      result.rating = 0;
+    }
+    result.rating_count = place.user_ratings_total;
+    if (!result.rating_count) {
+      result.rating_count = 0;
+    }
+
+    result.icon =
+      "https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&photo_reference=";
+
+    if (place.photos && place.photos[0] && place.photos[0].photo_reference) {
+      result.icon +=
+        place.photos[0].photo_reference +
+        "&key=AIzaSyD0hLVwxYWa2zWSJHtFnlh7CEqygEYnfvc";
+    } else {
+      result.icon = place.icon;
+    }
+
+    result.distance = getDistanceFromLatLonInMiles(
+      location.coords.latitude,
+      location.coords.longitude,
+      place.geometry.location.lat,
+      place.geometry.location.lng
+    );
+    result.distance =
+      (Math.round(result.distance * 100) / 100).toFixed(1) + " mi";
+    result.review_source_count = 1;
+
+    var source = {};
+    source.name = "Google";
+    source.icon = require("../assets/images/icons/small-google.png");
+    source.rating = place.rating;
+    if (!source.rating) {
+      source.rating = 0;
+    }
+    source.rating_count = result.rating_count;
+    result.sources = [];
+    result.sources.push(source);
+
+    normalized.push(result);
+  });
 
   return normalized;
 }
@@ -179,7 +162,6 @@ function deg2rad(deg) {
 }
 
 export function normalizeGooglePlacesDetailsAddress(incoming) {
-  //console.log(incoming.result.address_components);
   if (!incoming.result || !incoming.result.address_components) {
     return "";
   }
@@ -234,46 +216,34 @@ Normalized:
   ]
 }
 */
-export function normalizeTripAdvisorSearchResults(incoming, searchResults) {
+export function normalizeTripAdvisorSearchResults(incoming, location) {
   var normalized = [];
-
-  const [location, setLocation] = useState(null);
-  const [errorMsg, setErrorMsg] = useState(null);
-
-  useEffect(() => {
-    (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        setErrorMsg("Permission to access location was denied");
-        return;
-      }
-
-      let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
-    })();
-  }, []);
 
   if (incoming === undefined || incoming === null || !incoming.data) {
     return normalized;
   }
 
-  if (location && location.coords) {
-    incoming.data.map((location) => {
-      var result = {};
-      result.id = location.location_id;
-      result.tripAdvisorLocationId = location.location_id;
-      result.name = location.name;
-      result.rating = 0;
-      result.rating_count = 0;
-      result.distance =
-        (Math.round(location.distance * 100) / 100).toFixed(1) + " mi";
-      result.icon = require("../assets/images/example-icon1.png");
-      result.review_source_count = 1;
-      result.address = "";
-      if (location.address_obj && location.address_obj.address_string) {
-        result.address = location.address_obj.address_string;
-      }
+  if (!location || !location.coords) {
+    return normalized;
+  }
 
+  incoming.data.map((location) => {
+    var result = {};
+    result.id = location.location_id;
+    result.tripAdvisorLocationId = location.location_id;
+    result.name = location.name;
+    //result.rating = 0;
+    //result.rating_count = 0;
+    result.distance =
+      (Math.round(location.distance * 100) / 100).toFixed(1) + " mi";
+    result.icon = require("../assets/images/example-icon1.png");
+    result.review_source_count = 1;
+    result.address = "";
+    if (location.address_obj && location.address_obj.address_string) {
+      result.address = location.address_obj.address_string;
+    }
+
+    /*
       var source = {};
       source.name = "Trip Advisor";
       source.icon = require("../assets/images/icons/small-trip-advisor.png");
@@ -283,10 +253,58 @@ export function normalizeTripAdvisorSearchResults(incoming, searchResults) {
         result.sources = [];
       }
       result.sources.push(source);
+      */
 
-      normalized.push(result);
-    });
+    normalized.push(result);
+  });
+
+  return normalized;
+}
+
+export function normalizeTripAdvisorDetails(incoming, location) {
+  var normalized = [];
+
+  if (incoming === undefined || incoming === null) {
+    return normalized;
   }
+
+  if (!location || !location.coords) {
+    return normalized;
+  }
+
+  incoming.map((item) => {
+    var result = {};
+    result.id = item.location_id;
+    result.tripAdvisorLocationId = item.location_id;
+    result.name = item.name;
+    result.formatted_phone_number = normalizePhoneNumber(item.phone);
+    result.rating = item.rating;
+    result.rating_count = item.num_reviews;
+    result.icon = require("../assets/images/example-icon1.png");
+    result.review_source_count = 1;
+    result.address = "";
+    if (location.address_obj && location.address_obj.address_string) {
+      result.address = location.address_obj.address_string;
+    }
+    result.distance = getDistanceFromLatLonInMiles(
+      location.coords.latitude,
+      location.coords.longitude,
+      item.latitude,
+      item.longitude
+    );
+    result.distance =
+      (Math.round(result.distance * 100) / 100).toFixed(1) + " mi";
+
+    var source = {};
+    source.name = "Trip Advisor";
+    source.icon = require("../assets/images/icons/small-trip-advisor.png");
+    source.rating = item.rating;
+    source.rating_count = item.num_reviews;
+    result.sources = [];
+    result.sources.push(source);
+
+    normalized.push(result);
+  });
 
   return normalized;
 }
@@ -429,6 +447,9 @@ export function mergeGoogleDetailsIntoResults(results, details) {
   detailsBare = JSON.parse(JSON.stringify(details)); //copy details
   detailsBare = detailsBare.map((detail) => {
     detail.result.id = detail.result.place_id;
+    detail.formatted_phone_number = normalizePhoneNumber(
+      detail.formatted_phone_number
+    );
     delete detail.result.place_id;
     return detail.result;
   });
@@ -440,157 +461,56 @@ export function mergeGoogleDetailsIntoResults(results, details) {
   return Array.from(hash.values());
 }
 
-[
-  {
-    html_attributions: [],
-    result: {
-      formatted_phone_number: "(970) 887-9797",
-      place_id: "ChIJ6W1eJ6MxaocR9EMY0Y5VrZo",
-    },
-    status: "OK",
-  },
-  {
-    html_attributions: [],
-    result: {
-      formatted_phone_number: "(970) 531-5400",
-      place_id: "ChIJU7HFkJ40aocR0Vw3Yu97Rdg",
-    },
-    status: "OK",
-  },
-  {
-    html_attributions: [],
-    result: {
-      formatted_phone_number: "(970) 557-4211",
-      place_id: "ChIJW3WWKJovaocRe2WbXXGmkY8",
-    },
-    status: "OK",
-  },
-  {
-    html_attributions: [],
-    result: {
-      formatted_phone_number: "(970) 726-5332",
-      place_id: "ChIJWafwEtM0aocRk7xiQsnAAng",
-    },
-    status: "OK",
-  },
-  {
-    html_attributions: [],
-    result: {
-      formatted_phone_number: "(970) 363-7081",
-      place_id: "ChIJd9V5ntM0aocR99tsVmy6snA",
-    },
-    status: "OK",
-  },
-  {
-    html_attributions: [],
-    result: {
-      formatted_phone_number: "(720) 937-7750",
-      place_id: "ChIJIS2x4oE1aocRhT_GeHl4Ff0",
-    },
-    status: "OK",
-  },
-  {
-    html_attributions: [],
-    result: {
-      formatted_phone_number: "(970) 363-7535",
-      place_id: "ChIJlRzRFVg1aocRsUU-6dJ70eA",
-    },
-    status: "OK",
-  },
-  {
-    html_attributions: [],
-    result: {
-      formatted_phone_number: "(970) 726-5633",
-      place_id: "ChIJLz2SkEwzaocRXPPHArCJXKs",
-    },
-    status: "OK",
-  },
-  {
-    html_attributions: [],
-    result: {
-      formatted_phone_number: "(970) 363-7634",
-      place_id: "ChIJ6ciFF8Q1aocRIkDnI2j9sG4",
-    },
-    status: "OK",
-  },
-  {
-    html_attributions: [],
-    result: {
-      formatted_phone_number: "(970) 887-3518",
-      place_id: "ChIJ_T8XJRgvaocR4Hl3mZ9dlEQ",
-    },
-    status: "OK",
-  },
-  {
-    html_attributions: [],
-    result: {
-      formatted_phone_number: "(970) 726-4430",
-      place_id: "ChIJGw9AvE8yaocR03YeGV2MhI8",
-    },
-    status: "OK",
-  },
-  {
-    html_attributions: [],
-    result: {
-      formatted_phone_number: "(970) 726-4021",
-      place_id: "ChIJq1j1HMw0aocR0ZN5-XavVpE",
-    },
-    status: "OK",
-  },
-  {
-    html_attributions: [],
-    result: {
-      formatted_phone_number: "(970) 887-2152 ext. 4122",
-      place_id: "ChIJKSBV3psxaocRT8xj4lxpwoo",
-    },
-    status: "OK",
-  },
-  {
-    html_attributions: [],
-    result: {
-      formatted_phone_number: "(970) 726-1172",
-      place_id: "ChIJzamqvs00aocRu3PCIxnhvoo",
-    },
-    status: "OK",
-  },
-  {
-    html_attributions: [],
-    result: {
-      formatted_phone_number: "(970) 726-8646",
-      place_id: "ChIJfVneEJ00aocRknf5-udWiIw",
-    },
-    status: "OK",
-  },
-  {
-    html_attributions: [],
-    result: {
-      formatted_phone_number: "(970) 509-9535",
-      place_id: "ChIJWTma8v0vaocRgqDpHd4i7BY",
-    },
-    status: "OK",
-  },
-  {
-    html_attributions: [],
-    result: {
-      formatted_phone_number: "(970) 726-0202",
-      place_id: "ChIJocCuCNM0aocRPYRdFNFY7Ek",
-    },
-    status: "OK",
-  },
-  {
-    html_attributions: [],
-    result: {
-      formatted_phone_number: "(970) 460-9800",
-      place_id: "ChIJd9V5ntM0aocR4MfOgXfoChA",
-    },
-    status: "OK",
-  },
-  {
-    html_attributions: [],
-    result: {
-      formatted_phone_number: "(631) 252-2552",
-      place_id: "ChIJtYbb6sM1aocR0Oa63ocIhaM",
-    },
-    status: "OK",
-  },
-];
+export function mergeTripAdvisorDetailsIntoResults(results, details) {
+  if (results === undefined || results === null) {
+    return [];
+  }
+
+  if (
+    details === undefined ||
+    details === null ||
+    !Array.isArray(details) ||
+    details.length === 0
+  ) {
+    return results;
+  }
+
+  var detailsBare = [];
+  details.map((detail) => {
+    var detailCopy = {};
+    detailCopy.tripAdvisorLocationId = detail.location_id;
+    detailCopy.formatted_phone_number = normalizePhoneNumber(detail.phone);
+    detailCopy.rating = detail.rating;
+    detailCopy.rating_count = detail.num_reviews;
+    detailCopy.id = detail.location_id;
+    detailCopy.name = detail.name;
+
+    var source = {};
+    source.name = "Trip Advisor";
+    source.icon = require("../assets/images/icons/small-trip-advisor.png");
+    source.rating = detail.rating;
+    source.rating_count = detail.num_reviews;
+    detailCopy.sources = [];
+    detailCopy.sources.push(source);
+
+    detailsBare.push(detailCopy);
+  });
+
+  var hash = new Map();
+  results.concat(detailsBare).forEach(function (obj) {
+    hash.set(
+      obj.tripAdvisorLocationId,
+      Object.assign(hash.get(obj.tripAdvisorLocationId) || {}, obj)
+    );
+  });
+
+  return Array.from(hash.values());
+}
+
+export function normalizePhoneNumber(phone) {
+  if (typeof phone !== "string" && !phone instanceof String) {
+    return phone;
+  }
+
+  return phone.replace("+1", "").replace(/\D/g, "");
+}
