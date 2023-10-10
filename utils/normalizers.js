@@ -309,6 +309,74 @@ export function normalizeTripAdvisorDetails(incoming, location) {
   return normalized;
 }
 
+export function mergeResultsOnPhoneNumber(set1, set2) {
+  var merged = [];
+  if (
+    (set1 === undefined || set1 === null) &&
+    (set2 === undefined || set2 === null)
+  ) {
+    return merged;
+  }
+
+  if (set1 === undefined || set1 === null) {
+    return set2;
+  }
+
+  if (set2 === undefined || set2 === null) {
+    return set1;
+  }
+
+  var set2Copy = set2.map((x) => x);
+
+  var notFound = [];
+  set1.forEach(function (item, index) {
+    // console.log("HERE1");
+    // console.log(item);
+    if (
+      item.formatted_phone_number === undefined ||
+      item.formatted_phone_number === null
+    ) {
+      notFound.push(item);
+      return;
+    }
+
+    let matchArray = set2Copy.filter(function (item2, index) {
+      // console.log("HERE2");
+      // console.log(item2);
+      if (
+        item2.formatted_phone_number === undefined ||
+        item2.formatted_phone_number === null
+      ) {
+        return false;
+      }
+
+      if (
+        item.name.indexOf("Tabernash") !== -1 &&
+        item2.name.indexOf("Tabernash") !== -1
+      ) {
+        console.log("HERE");
+        console.log(item.formatted_phone_number);
+        console.log(item2.formatted_phone_number);
+      }
+
+      if (item.formatted_phone_number === item2.formatted_phone_number) {
+        return true;
+      }
+    });
+
+    if (matchArray.length !== 1) {
+      notFound.push(item);
+      return;
+    }
+
+    merged.push(mergeResults(item, matchArray[0]));
+    set2Copy = set2Copy.filter((item) => !matchArray.includes(item));
+  });
+
+  merged = merged.concat(notFound, set2Copy);
+  return merged;
+}
+
 export function mergeResultsOnAddress(set1, set2) {
   var merged = [];
   if (
@@ -447,8 +515,8 @@ export function mergeGoogleDetailsIntoResults(results, details) {
   detailsBare = JSON.parse(JSON.stringify(details)); //copy details
   detailsBare = detailsBare.map((detail) => {
     detail.result.id = detail.result.place_id;
-    detail.formatted_phone_number = normalizePhoneNumber(
-      detail.formatted_phone_number
+    detail.result.formatted_phone_number = normalizePhoneNumber(
+      detail.result.formatted_phone_number
     );
     delete detail.result.place_id;
     return detail.result;
@@ -508,9 +576,12 @@ export function mergeTripAdvisorDetailsIntoResults(results, details) {
 }
 
 export function normalizePhoneNumber(phone) {
+  //console.log(phone);
   if (typeof phone !== "string" && !phone instanceof String) {
     return phone;
   }
 
-  return phone.replace("+1", "").replace(/\D/g, "");
+  var result = phone.replace("+1", "").replace(/\D/g, "");
+  //console.log("RESULT: " + result);
+  return result;
 }
