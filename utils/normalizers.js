@@ -479,6 +479,14 @@ export function mergeResults(result1, result2) {
     mergedResult.review_source_count = mergedResult.sources.length;
   }
 
+  mergedResult.rating_count = 0;
+  var totalStars = 0;
+  mergedResult.sources.forEach(async (source) => {
+    mergedResult.rating_count += parseInt(source.rating_count);
+    totalStars += parseInt(source.rating_count) * parseFloat(source.rating);
+  });
+  mergedResult.rating = totalStars / mergedResult.rating_count;
+
   if (result2.icon !== undefined && mergedResult.icon === undefined) {
     mergedResult.icon = result2.icon;
   }
