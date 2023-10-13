@@ -486,6 +486,7 @@ export function mergeResults(result1, result2) {
     totalStars += parseInt(source.rating_count) * parseFloat(source.rating);
   });
   mergedResult.rating = totalStars / mergedResult.rating_count;
+  mergedResult.rating = Math.round(mergedResult.rating * 10) / 10;
 
   if (result2.icon !== undefined && mergedResult.icon === undefined) {
     mergedResult.icon = result2.icon;
@@ -585,11 +586,14 @@ export function mergeTripAdvisorDetailsIntoResults(results, details) {
 
 export function normalizePhoneNumber(phone) {
   //console.log(phone);
-  if (typeof phone !== "string" && !phone instanceof String) {
+  if (
+    phone === undefined ||
+    typeof phone !== "string" ||
+    !phone instanceof String
+  ) {
     return phone;
   }
 
   var result = phone.replace("+1", "").replace(/\D/g, "");
-  //console.log("RESULT: " + result);
   return result;
 }
