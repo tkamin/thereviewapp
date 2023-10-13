@@ -341,22 +341,11 @@ export function mergeResultsOnPhoneNumber(set1, set2) {
     }
 
     let matchArray = set2Copy.filter(function (item2, index) {
-      // console.log("HERE2");
-      // console.log(item2);
       if (
         item2.formatted_phone_number === undefined ||
         item2.formatted_phone_number === null
       ) {
         return false;
-      }
-
-      if (
-        item.name.indexOf("Tabernash") !== -1 &&
-        item2.name.indexOf("Tabernash") !== -1
-      ) {
-        console.log("HERE");
-        console.log(item.formatted_phone_number);
-        console.log(item2.formatted_phone_number);
       }
 
       if (item.formatted_phone_number === item2.formatted_phone_number) {

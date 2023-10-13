@@ -5,8 +5,10 @@ const useGoogleNearbySearch = (searchText, location) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  //var uri =
+  //  "https://maps.googleapis.com/maps/api/place/nearbysearch/json?radius=10000&type=restaurant&key=AIzaSyD0hLVwxYWa2zWSJHtFnlh7CEqygEYnfvc";
   var uri =
-    "https://maps.googleapis.com/maps/api/place/nearbysearch/json?radius=10000&type=restaurant&key=AIzaSyD0hLVwxYWa2zWSJHtFnlh7CEqygEYnfvc";
+    "https://maps.googleapis.com/maps/api/place/nearbysearch/json?rankby=distance&type=restaurant&key=AIzaSyD0hLVwxYWa2zWSJHtFnlh7CEqygEYnfvc";
   if (searchText && searchText !== null && searchText !== "") {
     uri += "&keyword=" + searchText;
   }
