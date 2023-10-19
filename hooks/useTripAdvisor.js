@@ -8,6 +8,11 @@ const useTripAdvisorSearch = (searchText, location) => {
 
   var uri =
     "https://api.content.tripadvisor.com/api/v1/location/nearby_search?key=38805DF776FF48AF84D0CFEB24D622DD&category=restaurants&radius=6&radiusUnit=mi&language=en";
+  if (searchText !== undefined && searchText !== "") {
+    uri =
+      "https://api.content.tripadvisor.com/api/v1/location/search?key=38805DF776FF48AF84D0CFEB24D622DD&category=restaurants&radius=6&radiusUnit=mi&language=en&searchQuery=" +
+      searchText;
+  }
 
   useEffect(() => {
     if (
