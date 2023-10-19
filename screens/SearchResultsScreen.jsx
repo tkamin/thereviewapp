@@ -15,7 +15,7 @@ import {
   useGoogleDetails,
   fetchGoogleDetails,
 } from "../hooks/useGooglePlaces";
-import { useTripAdvisorNearbySearch } from "../hooks/useTripAdvisor";
+import { useTripAdvisorSearch } from "../hooks/useTripAdvisor";
 
 const SearchResultsScreen = ({ navigation, route }) => {
   const [location, setLocation] = useState(null);
@@ -40,18 +40,34 @@ const SearchResultsScreen = ({ navigation, route }) => {
     route.params.searchText,
     location
   );
-
   searchResults = normalizeGooglePlacesSearchResults(googleData, location);
-  //searchResults = searchResults.slice(0, 2);
+  searchResults = searchResults.filter((item) => {
+    if (item === undefined || item.rating_count === 0) {
+      return false;
+    }
+
+    return true;
+  });
+  searchResults = searchResults.slice(0, 2);
   // TODO: move useGoogleDetails calls into the .then in useGoogleNearbySearch
   var googleDetails = useGoogleDetails(searchResults);
   searchResults = mergeGoogleDetailsIntoResults(searchResults, googleDetails);
 
   console.log(JSON.stringify(searchResults));
 
-  const { tripAdvisorData, loading, error2 } =
-    useTripAdvisorNearbySearch(location);
+  const { tripAdvisorData, loading, error2 } = useTripAdvisorSearch(
+    route.params.searchText,
+    location
+  );
   searchResults = mergeResultsOnPhoneNumber(searchResults, tripAdvisorData);
+
+  searchResults = searchResults.filter((item) => {
+    if (item === undefined || item.rating_count == 0) {
+      return false;
+    }
+
+    return true;
+  });
 
   return (
     <View style={[styles.container]}>

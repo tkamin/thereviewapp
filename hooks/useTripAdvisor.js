@@ -1,17 +1,7 @@
 import { useEffect, useState } from "react";
-import {
-  normalizeTripAdvisorSearchResults,
-  mergeTripAdvisorDetailsIntoResults,
-  normalizeTripAdvisorDetails,
-} from "../utils/normalizers";
+import { normalizeTripAdvisorDetails } from "../utils/normalizers";
 
 const useTripAdvisorSearch = (searchText, location) => {
-  const { tripAdvisorSearchResults, loading, error } =
-    useTripAdvisorNearbySearch(location);
-  return { tripAdvisorSearchResults, loading, error };
-};
-
-const useTripAdvisorNearbySearch = (location) => {
   const [tripAdvisorData, setTripAdvisorData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -132,4 +122,4 @@ const fetchTripAdvisorDetails = async (ids) => {
   return results;
 };
 
-export { useTripAdvisorSearch, useTripAdvisorNearbySearch };
+export { useTripAdvisorSearch };

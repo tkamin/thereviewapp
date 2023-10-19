@@ -471,8 +471,12 @@ export function mergeResults(result1, result2) {
   mergedResult.rating_count = 0;
   var totalStars = 0;
   mergedResult.sources.forEach(async (source) => {
-    mergedResult.rating_count += parseInt(source.rating_count);
-    totalStars += parseInt(source.rating_count) * parseFloat(source.rating);
+    mergedResult.rating_count +=
+      source.rating_count !== undefined ? parseInt(source.rating_count) : 0;
+    totalStars +=
+      source.rating_count !== undefined && source.rating !== undefined
+        ? parseInt(source.rating_count) * parseFloat(source.rating)
+        : 0;
   });
   mergedResult.rating = totalStars / mergedResult.rating_count;
   mergedResult.rating = Math.round(mergedResult.rating * 10) / 10;
