@@ -246,8 +246,6 @@ const useTripAdvisorPhoneSearch = (places, location) => {
       });
 
       var results = await Promise.all(apiPromises).then((result) => {
-        console.log("HERE: ");
-        console.log(JSON.stringify(result));
         if (
           !result ||
           result === null ||
@@ -268,8 +266,8 @@ const useTripAdvisorPhoneSearch = (places, location) => {
 
       results = results.filter((result) => !!result);
 
-      console.log("RESULTS: " + results.length);
-      console.log(JSON.stringify(results));
+      //console.log("RESULTS: " + results.length);
+      //console.log(JSON.stringify(results));
 
       setTripAdvisorPhoneResults(results);
     };

@@ -13,7 +13,7 @@ import {
 import {
   useGoogleNearbySearch,
   useGoogleDetails,
-  fetchGoogleDetails,
+  useGoogleFindPlace,
 } from "../hooks/useGooglePlaces";
 import {
   useTripAdvisorSearch,
@@ -43,7 +43,13 @@ const SearchResultsScreen = ({ navigation, route }) => {
     route.params.searchText,
     location
   );
-  searchResults = normalizeGooglePlacesSearchResults(googleData, location);
+
+  if (googleData !== undefined && googleData !== null && googleData.results) {
+    searchResults = normalizeGooglePlacesSearchResults(
+      googleData.results,
+      location
+    );
+  }
   searchResults = searchResults.filter((item) => {
     if (item === undefined || item.rating_count === 0) {
       return false;
@@ -51,7 +57,7 @@ const SearchResultsScreen = ({ navigation, route }) => {
 
     return true;
   });
-  searchResults = searchResults.slice(0, 10);
+  //searchResults = searchResults.slice(0, 10);
   // TODO: move useGoogleDetails calls into the .then in useGoogleNearbySearch
   var googleDetails = useGoogleDetails(searchResults);
   searchResults = mergeGoogleDetailsIntoResults(searchResults, googleDetails);
@@ -98,6 +104,29 @@ const SearchResultsScreen = ({ navigation, route }) => {
   searchResults = mergeResultsOnPhoneNumber(
     searchResults,
     tripAdvisorPhoneResults
+  );
+
+  // identify google only results
+  var taOnly = searchResults.filter((item) => {
+    if (
+      item === undefined ||
+      item.sources === undefined ||
+      item.sources.length === 2
+    ) {
+      return false;
+    }
+
+    if (item.sources.length === 1 && item.sources[0].name === "Trip Advisor") {
+      return true;
+    }
+
+    return false;
+  });
+
+  const googleFindPlaceResults = useGoogleFindPlace(taOnly, location);
+  searchResults = mergeResultsOnPhoneNumber(
+    googleFindPlaceResults,
+    searchResults
   );
 
   return (

@@ -74,22 +74,21 @@ Normalized:
     }
 ]
 */
-export function normalizeGooglePlacesSearchResults(incoming, location) {
+export function normalizeGooglePlacesSearchResults(incoming, location, phone) {
   var normalized = [];
-
-  if (incoming === undefined || incoming === null || !incoming.results) {
-    return normalized;
-  }
 
   if (!location || !location.coords) {
     return normalized;
   }
 
-  incoming.results.map((place) => {
+  incoming.map((place) => {
     var result = {};
     result.id = place.place_id;
     result.name = place.name;
-    result.address = place.vicinity;
+    result.address =
+      place.vicinity !== undefined && place.vicinity
+        ? place.vicinity
+        : place.address;
     result.rating = place.rating;
     if (!result.rating) {
       result.rating = 0;
@@ -97,6 +96,9 @@ export function normalizeGooglePlacesSearchResults(incoming, location) {
     result.rating_count = place.user_ratings_total;
     if (!result.rating_count) {
       result.rating_count = 0;
+    }
+    if (phone && phone !== null && phone !== "") {
+      result.formatted_phone_number = phone;
     }
 
     result.icon =
