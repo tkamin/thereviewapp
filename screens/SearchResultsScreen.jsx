@@ -15,7 +15,10 @@ import {
   useGoogleDetails,
   fetchGoogleDetails,
 } from "../hooks/useGooglePlaces";
-import { useTripAdvisorSearch } from "../hooks/useTripAdvisor";
+import {
+  useTripAdvisorSearch,
+  useTripAdvisorPhoneSearch,
+} from "../hooks/useTripAdvisor";
 
 const SearchResultsScreen = ({ navigation, route }) => {
   const [location, setLocation] = useState(null);
@@ -48,12 +51,12 @@ const SearchResultsScreen = ({ navigation, route }) => {
 
     return true;
   });
-  searchResults = searchResults.slice(0, 2);
+  searchResults = searchResults.slice(0, 10);
   // TODO: move useGoogleDetails calls into the .then in useGoogleNearbySearch
   var googleDetails = useGoogleDetails(searchResults);
   searchResults = mergeGoogleDetailsIntoResults(searchResults, googleDetails);
 
-  console.log(JSON.stringify(searchResults));
+  //console.log(JSON.stringify(searchResults));
 
   const { tripAdvisorData, loading, error2 } = useTripAdvisorSearch(
     route.params.searchText,
@@ -68,6 +71,34 @@ const SearchResultsScreen = ({ navigation, route }) => {
 
     return true;
   });
+
+  // identify google only results
+  var googleOnly = searchResults.filter((item) => {
+    if (
+      item === undefined ||
+      item.sources === undefined ||
+      item.sources.length === 2
+    ) {
+      return false;
+    }
+
+    if (item.sources.length === 1 && item.sources[0].name === "Google") {
+      return true;
+    }
+
+    return false;
+  });
+
+  console.log("GOOGLE ONLY: " + googleOnly.length);
+  // backfill TA: basically need to run search and then details for each phone number
+  const tripAdvisorPhoneResults = useTripAdvisorPhoneSearch(
+    googleOnly,
+    location
+  );
+  searchResults = mergeResultsOnPhoneNumber(
+    searchResults,
+    tripAdvisorPhoneResults
+  );
 
   return (
     <View style={[styles.container]}>
@@ -138,46 +169,6 @@ const DATA = [
     rating_count: 12345,
     review_source_count: 3,
     distance: "6.1 mi",
-  },
-  {
-    id: "58694a0f-3da1-471f-bd96-145571e29d72",
-    name: "Pepe Osaka's Fishtaco Tequila Bar & Grill",
-    icon: require("../assets/images/example-icon1.png"),
-    stars: require("../assets/images/4.5stars.png"),
-    rating: 4.6,
-    rating_count: 1111,
-    review_source_count: 3,
-    distance: "6.2 mi",
-  },
-  {
-    id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28bb",
-    name: "Hernando's Pizza Pub",
-    icon: require("../assets/images/example-icon2.png"),
-    stars: require("../assets/images/4.5stars.png"),
-    rating: 4.5,
-    rating_count: 743,
-    review_source_count: 2,
-    distance: "5.8 mi",
-  },
-  {
-    id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f64",
-    name: "The Smokehouse BBQ",
-    icon: require("../assets/images/example-icon1.png"),
-    stars: require("../assets/images/4.5stars.png"),
-    rating: 4.5,
-    rating_count: 1289,
-    review_source_count: 3,
-    distance: "6.1 mi",
-  },
-  {
-    id: "58694a0f-3da1-471f-bd96-145571e29d73",
-    name: "Rudi's Deli",
-    icon: require("../assets/images/example-icon2.png"),
-    stars: require("../assets/images/4.5stars.png"),
-    rating: 4.4,
-    rating_count: 86,
-    review_source_count: 2,
-    distance: "6.2 mi",
   },
 ];
 

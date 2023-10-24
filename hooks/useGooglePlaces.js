@@ -86,8 +86,6 @@ const useGoogleDetails = (searchResults) => {
 };
 
 const fetchGoogleDetails = (ids) => {
-  console.log("CALLING fetchGoogleDetails");
-
   var uris = [];
   var uri =
     "https://maps.googleapis.com/maps/api/place/details/json?fields=formatted_phone_number,place_id&key=AIzaSyD0hLVwxYWa2zWSJHtFnlh7CEqygEYnfvc";

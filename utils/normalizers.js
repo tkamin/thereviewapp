@@ -330,8 +330,6 @@ export function mergeResultsOnPhoneNumber(set1, set2) {
 
   var notFound = [];
   set1.forEach(function (item, index) {
-    // console.log("HERE1");
-    // console.log(item);
     if (
       item.formatted_phone_number === undefined ||
       item.formatted_phone_number === null
@@ -578,7 +576,6 @@ export function mergeTripAdvisorDetailsIntoResults(results, details) {
 }
 
 export function normalizePhoneNumber(phone) {
-  //console.log(phone);
   if (
     phone === undefined ||
     typeof phone !== "string" ||
