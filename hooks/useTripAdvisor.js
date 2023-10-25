@@ -163,13 +163,6 @@ const useTripAdvisorPhoneSearch = (places, location) => {
             return;
           }
 
-          console.log(
-            "PUSHING: " +
-              baseUri +
-              encodeURIComponent(place.name.split(" ")[0]) +
-              "&phone=" +
-              place.formatted_phone_number
-          );
           uris.push(
             baseUri +
               encodeURIComponent(place.name.split(" ")[0]) +
@@ -179,11 +172,11 @@ const useTripAdvisorPhoneSearch = (places, location) => {
         });
       }
 
-      console.log("CALLING fetchWithPhoneNumber for: " + uris.length);
-
       if (uris.length === 0) {
         return;
       }
+
+      console.log("CALLING Google fetchWithPhoneNumber for: " + uris.length);
 
       var apiPromises = uris.map((uri) => {
         return fetch(uri, {

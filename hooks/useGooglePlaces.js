@@ -49,8 +49,6 @@ const useGoogleDetails = (searchResults) => {
   useEffect(() => {
     var ids = searchResults.map((item) => item.id);
 
-    console.log("CALLING useGoogleDetails: " + ids.length);
-
     var uris = [];
     var uri =
       "https://maps.googleapis.com/maps/api/place/details/json?fields=formatted_phone_number,place_id&key=AIzaSyD0hLVwxYWa2zWSJHtFnlh7CEqygEYnfvc";
@@ -139,8 +137,6 @@ const useGoogleFindPlace = (searchResults, location) => {
       var phone_numbers = searchResults.map(
         (item) => item.formatted_phone_number
       );
-
-      console.log("CALLING useGoogleFindPlace: " + phone_numbers.length);
 
       var uris = [];
       var uri =

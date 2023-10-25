@@ -10,6 +10,11 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import DynamicStarImage from "../components/DynamicStarImage";
 
+function addZeroes(num) {
+  return Number(num).toFixed(
+    Math.max(((num + "").split(".")[1] || "").length, 1)
+  );
+}
 const Item = ({ item }) => {
   const navigation = useNavigation();
 
@@ -29,7 +34,7 @@ const Item = ({ item }) => {
           <Text style={styles.title}>{item.name}</Text>
           {item.rating_count > 0 && (
             <View style={[styles.containerreview]}>
-              <Text style={styles.reviewinfo}>{item.rating}</Text>
+              <Text style={styles.reviewinfo}>{addZeroes(item.rating)}</Text>
               <DynamicStarImage item={item} />
             </View>
           )}

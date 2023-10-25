@@ -20,6 +20,16 @@ import {
   useTripAdvisorPhoneSearch,
 } from "../hooks/useTripAdvisor";
 
+function compareRatings(item1, item2) {
+  if (item1.rating > item2.rating) {
+    return -1;
+  }
+  if (item1.rating < item2.rating) {
+    return 1;
+  }
+  return 0;
+}
+
 const SearchResultsScreen = ({ navigation, route }) => {
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
@@ -95,7 +105,6 @@ const SearchResultsScreen = ({ navigation, route }) => {
     return false;
   });
 
-  console.log("GOOGLE ONLY: " + googleOnly.length);
   // backfill TA: basically need to run search and then details for each phone number
   const tripAdvisorPhoneResults = useTripAdvisorPhoneSearch(
     googleOnly,
@@ -128,6 +137,9 @@ const SearchResultsScreen = ({ navigation, route }) => {
     googleFindPlaceResults,
     searchResults
   );
+
+  //sort by rating
+  searchResults.sort(compareRatings);
 
   return (
     <View style={[styles.container]}>
